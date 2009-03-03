@@ -5,15 +5,15 @@
 ################################################################################
 
 module Key
-  MOD         = 'Mod1'
-  UP          = 't'
-  DOWN        = 'n'
+  MOD         = 'Mod4'
+  UP          = 'k'
+  DOWN        = 'j'
   LEFT        = 'h'
-  RIGHT       = 's'
+  RIGHT       = 'l'
 
-  PREFIX      = MOD + '-Control-'
+  PREFIX      = MOD + '-'
   FOCUS       = PREFIX
-  SEND        = PREFIX + 'm,'
+  SEND        = PREFIX + 'Shift-'
   SWAP        = PREFIX + 'w,'
   ARRANGE     = PREFIX + 'z,'
   GROUP       = PREFIX + 'g,'
@@ -32,15 +32,15 @@ end
 
 module Color
   { # Color tuples are "<text> <background> <border>"
-    :NORMCOLORS   => NORMAL     = '#e0e0e0 #0a0a0a #202020',
-    :FOCUSCOLORS  => FOCUSED    = '#ffffff #285577 #4c7899',
-    :BACKGROUND   => BACKGROUND = '#333333',
+    :NORMCOLORS   => NORMAL     = '#5ad25a #000000 #202020',
+    :FOCUSCOLORS  => FOCUSED    = '#ffffff #000000 #5ad25a',
+    :BACKGROUND   => BACKGROUND = '#000000',
   }.each_pair do |k, v|
     ENV["WMII_#{k}"] = v
   end
 end
 
-WMII_FONT = '-*-bitstream vera sans mono-medium-r-*-*-16-*-*-*-*-*-*-*'
+WMII_FONT = '-*-dejavu sans mono-*-r-*-*-14-*-*-*-*-*-*-*'
 
 
 ################################################################################
@@ -62,23 +62,23 @@ fs.colrules.write <<EOF
 EOF
 
 # Tagging Rules
-fs.tagrules.write <<EOF
-/Gran Paradiso - Restore Previous Session/ -> web
-/.*notes.*/ -> note
-/Deluge/ -> tor
-/Buddy List.*/ -> chat
-/XChat.*/ -> chat
-/Thunderbird.*/ -> mail
-/Liferea.*/ -> mail
-/Gimp.*/ -> gimp
-/xconsole.*/ -> ~
-/alsamixer.*/ -> ~
-/QEMU.*/ -> ~
-/XMMS.*/ -> ~
-/MPlayer.*/ -> ~
-/.*/ -> !
-/.*/ -> 1
-EOF
+#fs.tagrules.write <<EOF
+#/Gran Paradiso - Restore Previous Session/ -> web
+#/.*notes.*/ -> note
+#/Deluge/ -> tor
+#/Buddy List.*/ -> chat
+#/XChat.*/ -> chat
+#/Thunderbird.*/ -> mail
+#/Liferea.*/ -> mail
+#/Gimp.*/ -> gimp
+#/xconsole.*/ -> ~
+#/alsamixer.*/ -> ~
+#/QEMU.*/ -> ~
+#/XMMS.*/ -> ~
+#/MPlayer.*/ -> ~
+#/.*/ -> !
+#/.*/ -> 1
+#EOF
 
 # events
   event :CreateTag do |tag|
@@ -154,6 +154,9 @@ EOF
     when /:(Firefox|Gran Paradiso|jEdit|Epiphany)/i
       c.tags = curr_tag
       c.focus
+    when /:(stjerm|yakuake)/i
+      c.tags = curr_tag
+      c.focus
     end
   end
 
@@ -217,17 +220,21 @@ EOF
       end,
 
       StatusBar.new(fs.rbar.clock, 1) do
-        Time.now
+        Time.now.strftime "%a %b %d %H:%M:%S"
       end,
 
       StatusBar.new(fs.rbar.cpu_load, 5) do
         File.read('/proc/loadavg').split[0..2].join(' ')
       end,
 
-      StatusBar.new(fs.rbar.disk_space, 10) do
-        rem, use, dir = `df -h ~`.split[-3..-1]
-        "#{dir} #{use} used #{rem} free"
-      end,
+      StatusBar.new(fs.rbar.wlan, 20) do
+               
+      end 
+
+#      StatusBar.new(fs.rbar.disk_space, 10) do
+#        rem, use, dir = `df -h ~`.split[-3..-1]
+#        "#{dir} #{use} used #{rem} free"
+#      end,
     ]
   end
 
@@ -295,12 +302,12 @@ EOF
     end
 
     # focus the previous view
-    key Key::FOCUS + 'comma' do
+    key 'Control-XF86Back' do
       prev_view.focus
     end
 
     # focus the next view
-    key Key::FOCUS + 'period' do
+    key 'Control-XF86Forward' do
       next_view.focus
     end
 
@@ -341,6 +348,11 @@ EOF
       grouping.each do |c|
         c.ctl.write 'kill'
       end
+    end
+
+    # toggle fullscreen of the current client - TODO implement to rumai
+    key Key::SEND + 'f' do
+      curr_client.ctl.write "Fullscreen toggle"
     end
 
     # swap the currently focused client with the one to its left
@@ -514,21 +526,21 @@ EOF
     end
 
     # launch an external program by choosing from a menu
-    key Key::MENU + 'e' do
+    key Key::MENU + 'a' do
       if choice = show_menu(@programMenu, 'run program:')
         system choice << '&'
       end
     end
 
     # focus any view by choosing from a menu
-    key Key::MENU + 'u' do
+    key Key::MENU + 'e' do
       if choice = show_menu(tags, 'show view:')
         focus_view choice
       end
     end
 
     # focus any client by choosing from a menu
-    key Key::MENU + 'a' do
+    key Key::MENU + 'd' do
       choices = []
       clients.each_with_index do |c, i|
         choices << "%d. [%s] %s" % [i, c[:tags].read, c[:props].read.downcase]
@@ -545,28 +557,26 @@ EOF
 
     # Open a new terminal and set its working directory
     # to be the same as the currently focused terminal.
-    key Key::EXECUTE + 'x' do
+    key Key::EXECUTE + 's' do
       c = curr_client
       d = File.expand_path(c.label.read.split(' ', 2).last) rescue nil
       d = ENV['HOME'] unless File.directory? d.to_s
 
-      FileUtils.cd(d) do
-        system 'terminal &'
-      end
+      system "PWD=#{d} urxvtc &"
     end
 
-    key Key::EXECUTE + 'k' do
-      system 'firefox &'
+    key Key::EXECUTE + 'q' do
+      curr_client.kill
     end
-
-    key Key::EXECUTE + 'j' do
-      system 'thunar &'
+    
+    key Key::EXECUTE + 'less' do
+      system 'stjerm --toggle &'
     end
 
     # volume controls
       def refresh_volume_display
-        level = `amixer get Master`.scan(/\d+%/).first
-        label = "volume #{level}"
+        level = `ossmix vmix0-outvol`.scan(/\d{1,2}.\d/).first
+        label = "#{level} dB"
 
         b = Rumai.fs.rbar.volume
         b.create unless b.exist?
@@ -575,18 +585,18 @@ EOF
         label
       end
 
-      key(Key::PREFIX + 'Shift-Prior') do
-        system 'amixer set Master 3dB+'
+      key 'XF86AudioRaiseVolume' do
+        system 'ossmix vmix0-outvol -- +1'
         refresh_volume_display
       end
 
-      key(Key::PREFIX + 'Shift-Next') do
-        system 'amixer set Master 3dB-'
+      key 'XF86AudioLowerVolume' do
+        system 'ossmix vmix0-outvol -- -1'
         refresh_volume_display
       end
 
-      key(Key::PREFIX + 'Shift-Return') do
-        system 'amixer set Master toggle'
+      key 'XF86AudioMute' do
+        system 'ossmix misc.lineout-mix.mute.front TOGGLE'
         refresh_volume_display
       end
 
@@ -602,10 +612,10 @@ EOF
         puts e # ignore
       end
 
-      key(Key::PREFIX + 'Prior')  { @mpd.previous }
-      key(Key::PREFIX + 'Next')   { @mpd.next }
+      key(Key::PREFIX + 'x')  { @mpd.previous }
+      key(Key::PREFIX + 'y')   { @mpd.next }
 
-      key Key::PREFIX + 'Return' do # play / pause
+      key Key::PREFIX + 'c' do # play / pause
         if @mpd.stopped?
           @mpd.play
         else
@@ -615,7 +625,7 @@ EOF
       end
 
       # load an MPD playlist
-      key(Key::PREFIX + 'Home') do
+      key(Key::PREFIX + 'v') do
         choices = @mpd.playlists
 
         if target = show_menu(choices, 'load MPD playlist:')
@@ -647,7 +657,7 @@ EOF
     DETACHED_TAG = '|'
 
     # Detach the current grouping from the current view.
-    key Key::PREFIX + 'd' do
+    key Key::PREFIX + 'o' do
       grouping.each do |c|
         c.with_tags do
           delete curr_tag
@@ -657,7 +667,7 @@ EOF
     end
 
     # Attach the most recently detached client onto the current view.
-    key Key::PREFIX + 'Shift-d' do
+    key Key::PREFIX + 'Shift-o' do
       v = View.new DETACHED_TAG
 
       if v.exist? and c = v.clients.last

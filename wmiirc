@@ -3,7 +3,7 @@
 
 # load the Ruby interface to wmii
   require 'rubygems'
-  gem 'rumai', '~> 2'
+  $LOAD_PATH << "~/wmii/rumai/lib"
   require 'rumai'
 
   include Rumai
@@ -48,6 +48,7 @@ begin
         end
       end
     end
+
 
     EVENTS  = Handler.new
     ACTIONS = Handler.new
@@ -132,8 +133,8 @@ begin
 
   # enable keyboard shortcuts
     fs.keys.write KEYS.keys.join("\n")
-
     event :Key do |*args|
+      p :Key => args
       key(*args)
     end
 
@@ -154,7 +155,7 @@ rescue Exception => e
   LOG.error e
 
   # allow the user to rescue themselves
-  system 'xterm &'
+  system 'urxvt &'
 
   IO.popen('xmessage -file - -buttons recover:0,ignore:1', 'w') do |f|
     f.puts e.inspect, e.backtrace
