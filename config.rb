@@ -559,10 +559,10 @@ EOF
     # to be the same as the currently focused terminal.
     key Key::EXECUTE + 's' do
       c = curr_client
-      d = File.expand_path(c.label.read.split(' ', 2).last) rescue nil
+      d = File.expand_path(c.label.read.split(' ')[1]) rescue nil
       d = ENV['HOME'] unless File.directory? d.to_s
 
-      system "PWD=#{d} urxvtc &"
+      system "urxvtc -cd #{d} &"
     end
 
     key Key::EXECUTE + 'q' do
