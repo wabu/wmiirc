@@ -117,7 +117,9 @@ begin
   end
 
   # load user's configuration file
-  load File.join(File.dirname(__FILE__), 'config.rb')
+  Dir.chdir File.dirname(__FILE__) do |path|
+    Dir.glob('*.rb').each {|file| load file}
+  end
 
   # populate lbar with buttons for every tag
     bar = fs.lbar
