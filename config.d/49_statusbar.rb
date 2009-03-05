@@ -6,7 +6,8 @@
         b.create unless b.exist?
 
         while true
-          b.write "#{aBarColor} #{aBarText.call}"
+          call_result = aBarText.call
+          b.write "#{call_result.first} #{call_result.last}" rescue b.write "#{aBarColor} #{aBarText.call}"
           sleep aRefreshRate
         end
       end
