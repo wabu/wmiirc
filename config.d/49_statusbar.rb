@@ -19,12 +19,16 @@
     end
 
     @statusBars = [
-      StatusBar.new(fs.rbar.volume, 10) do
-        refresh_volume_display
-      end,
-
       StatusBar.new(fs.rbar.clock, 1) do
         Time.now.strftime "%a %b %d %H:%M:%S"
+      end,
+
+      StatusBar.new(fs.rbar.batmon, 20) do
+        battmon
+      end,
+
+      StatusBar.new(fs.rbar.volume, 10) do
+        refresh_volume_display
       end,
 
       StatusBar.new(fs.rbar.cpu_load, 5) do
