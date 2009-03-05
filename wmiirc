@@ -117,8 +117,11 @@ begin
   end
 
   # load user's configuration file
-  Dir.chdir File.dirname(__FILE__) do |path|
-    Dir.glob('*.rb').each {|file| load file}
+  Dir.chdir File.dirname(__FILE__) + "/config.d" do |path|
+    Dir.glob('*.rb').sort.each do |file|
+      LOG.info "Loading file: " + file
+      load file
+    end
   end
 
   # populate lbar with buttons for every tag
