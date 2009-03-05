@@ -227,9 +227,6 @@ EOF
         File.read('/proc/loadavg').split[0..2].join(' ')
       end,
 
-      StatusBar.new(fs.rbar.wlan, 20) do
-               
-      end 
 
 #      StatusBar.new(fs.rbar.disk_space, 10) do
 #        rem, use, dir = `df -h ~`.split[-3..-1]
