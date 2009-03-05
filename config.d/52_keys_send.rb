@@ -13,13 +13,13 @@
 
     key Key::SEND + Key::DOWN do
       grouping.each do |c|
-        c.send :down
+        c.send :down rescue nil
       end
     end
 
     key Key::SEND + Key::UP do
       grouping.each do |c|
-        c.send :up
+        c.send :up rescue nil
       end
     end
 
