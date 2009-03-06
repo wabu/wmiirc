@@ -3,7 +3,9 @@
     key Key::MENU + 'i' do
       if choice = show_menu(@actionMenu + ACTIONS.keys, 'run action:')
         unless action choice.to_sym
-          system choice << '&'
+          Dir.chdir WMIIRCDIR do
+            system choice << '&'
+          end
         end
       end
     end

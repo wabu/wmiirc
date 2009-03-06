@@ -1,7 +1,7 @@
 # actions
   action :rehash do
     @programMenu  = find_programs ENV['PATH'].squeeze(':').split(':')
-    @actionMenu   = find_programs File.dirname(__FILE__)
+    @actionMenu   = find_programs WMIIRCDIR
   end
 
   action :kill do

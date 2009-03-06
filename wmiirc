@@ -12,6 +12,8 @@
   require 'logger'
   LOG = Logger.new(__FILE__ + '.log', 5)
 
+  WMIIRCDIR = File.dirname __FILE__
+
   unless $DEBUG
     class << LOG
       # emulate IO.write
@@ -139,7 +141,6 @@ begin
   # enable keyboard shortcuts
     fs.keys.write KEYS.keys.join("\n")
     event :Key do |*args|
-      p :Key => args
       key(*args)
     end
 
