@@ -12,7 +12,7 @@ Installation:
 
     mv ~/.wmii-3.5 ~/.wmii-3.5.backup
 
-    git clone git://github.com/sunaku/wmiirc.git ~/.wmii-3.5
+    git clone git://github.com/Tass/wmiirc.git ~/.wmii-3.5
 
     chmod +x ~/.wmii-3.5/wmiirc
 
