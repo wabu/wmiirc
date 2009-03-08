@@ -1,9 +1,10 @@
 #!/usr/bin/ruby -w
 # Loader for ruby-based wmii configuration.
 
+  WMIIRCDIR = File.dirname __FILE__
 # load the Ruby interface to wmii
   require 'rubygems'
-  $LOAD_PATH << "~/wmii/rumai/lib"
+  $LOAD_PATH << WMIIRCDIR + "/rumai/lib"
   require 'rumai'
 
   include Rumai
@@ -12,7 +13,6 @@
   require 'logger'
   LOG = Logger.new(__FILE__ + '.log', 5)
 
-  WMIIRCDIR = File.dirname __FILE__
 
   unless $DEBUG
     class << LOG
