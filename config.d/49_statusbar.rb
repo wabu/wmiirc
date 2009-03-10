@@ -29,6 +29,9 @@
     end
   end
 
+  VOLUMEBARNAME="u_volume"
+  fs.rbar.clear
+
   action :status do
     if defined? @buttons
       @buttons.each {|s| s.kill }
