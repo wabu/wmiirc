@@ -1,41 +1,30 @@
-# {{{ Battery monitor
-# Originally by Wael Nasreddine <wael@phoenixlinux.org>.
   def battmon
-    statefile = '/proc/acpi/battery/BAT0/state'
-    infofile = '/proc/acpi/battery/BAT0/info'
-    low = 5
-    low_action = 'echo "Low battery" | xmessage -center -buttons quit:0 -default quit -file -'
-    critical =  2
-    critical_action = 'echo "Critical battery" | xmessage -center -buttons quit:0 -default quit -file -'
-    warned_low = false
-    warned_critical = false
-    batt = IO.readlines(statefile)
-    battinfo = IO.readlines(infofile)
-    battpresent = battinfo[0].gsub(/.*:\s*/,'').chomp
-    if battpresent == "yes"
-      batt_percent = ((batt[4].gsub(/.*:\s*/,'').chomp.chomp("mAh").to_f / battinfo[2].gsub(/.*:\s*/,'').chomp.chomp(" mAh").to_f ) * 100).to_i
-      batt_state = batt[2].gsub(/.*:\s*/,'').chomp
-      # Take action in case battery is low/critical
-      if batt_state == "discharging" && batt_percent <= critical && ! warned_critical
-        LOG.info "Warning about critical battery."
-        system("#{critical_action} &")
-        warned_critical = true
-      elsif batt_state == "discharging" && batt_percent <= low && ! warned_low
-        LOG.info "Warning about low battery."
-        system("#{low_action} &")
-        warned_low = true
-      else
-        warned_low = false
-        warned_critical = false
+    # This is just a ugly workaround, until I know (or more likely sunaku) 
+    # why IO.readlines doesn't work
+    rem_per = `cat '/sys/devices/platform/smapi/BAT0/remaining_percent'`.chomp
+    rem_run = `cat '/sys/devices/platform/smapi/BAT0/remaining_running_time'`.chomp
+    rem_charge = `cat '/sys/devices/platform/smapi/BAT0/remaining_charging_time'`.chomp
+    state = `cat '/sys/devices/platform/smapi/BAT0/state'`.chomp
+    present = `cat '/sys/devices/platform/smapi/BAT0/installed'`.chomp == "1"
+
+    return "N/A" unless present
+    case state
+    when "discharging"
+      text = "%d:%02d" % rem_run.to_i.divmod(60)
+      color = case rem_per.to_i
+      when 40..100
+        "#00ff00 #000000 #202020"
+      when 10..39
+        "#ffff00 #000000 #202020"
+      when 0..9
+        "#ff0000 #000000 #202020"
       end
-      # If percent is 100 and state is discharging then
-      # the battery is full and not discharging.
-      batt_state = "=" if batt_state == "charged" || ( batt_state == "discharging" && batt_percent >= 97 )
-      batt_state = "^" if batt_state == "charging"
-      batt_state = "v" if batt_state == "discharging"
-      text = "#{batt_state} #{batt_percent} #{batt_state}"
-      return text
-    else
-      return "N/A"
+    when "charging"
+      color = "#0000ff #000000 #202020"
+      text = "%d:%02d" % rem_charge.to_i.divmod(60)
+    when "idle"
+      color = "#0000ff #000000 #202020"
+      text = "idle"
     end
+    return [color, text]
   end
