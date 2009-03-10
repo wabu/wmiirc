@@ -1,7 +1,7 @@
   # interactive menu
     # launch an internal action by choosing from a menu
     key Key::MENU + 'i' do
-      if choice = show_menu(@actionMenu + ACTIONS.keys, 'run action:')
+      if choice = show_menu(ACTIONS.keys, 'run action:')
         unless action choice.to_sym
           Dir.chdir WMIIRCDIR do
             system choice << '&'

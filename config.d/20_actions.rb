@@ -1,7 +1,11 @@
 # actions
+  action :reload do
+    system $0 + " &"
+  end
+
   action :rehash do
     @programMenu  = find_programs ENV['PATH'].squeeze(':').split(':')
-    @actionMenu   = find_programs WMIIRCDIR
+    # @actionMenu   = find_programs WMIIRCDIR
   end
 
   action :kill do
