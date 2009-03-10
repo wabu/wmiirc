@@ -6,7 +6,9 @@ This is my Ruby-based wmii configuration, explained in these articles:
 
 Dependencies:
 
-    gem install rumai librmpd
+    git clone git://github.com/sunaku/rumai.git ~/wmii-3.5/rumai
+
+    gem install librmpd
 
 Installation:
 
