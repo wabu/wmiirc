@@ -122,7 +122,7 @@ begin
   Dir.chdir File.dirname(__FILE__) + "/config.d" do |path|
     Dir.glob('*.rb').sort.each do |file|
       LOG.info "Loading file: " + file
-      load file
+      require file
     end
   end
 
