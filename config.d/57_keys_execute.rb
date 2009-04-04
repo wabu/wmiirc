@@ -8,7 +8,7 @@
       d = File.expand_path(c.label.read.split(' ')[1]) rescue nil
       d = ENV['HOME'] unless File.directory? d.to_s
 
-      system "urxvtc -cd #{d} &"
+      system "urxvt -cd #{d} &" unless system "urxvtc -cd #{d} &"
     end
 
     key Key::EXECUTE + 'q' do
@@ -17,4 +17,8 @@
     
     key Key::EXECUTE + 'less' do
       system 'stjerm --toggle &'
+    end
+
+    key Key::EXECUTE + 'diaeresis' do
+      system 'xscreensaver-command -lock &'
     end
