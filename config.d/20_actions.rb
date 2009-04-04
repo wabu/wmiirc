@@ -35,3 +35,16 @@
       end
     end
   end
+  
+  action :mpdconnect do
+      print 'connecting to MPD... ',
+      begin
+        require 'rubygems'
+        require 'librmpd'
+
+        @mpd = MPD.new
+        @mpd.connect(true) # true keeps connection alive
+      rescue => e
+        puts e # ignore
+      end
+  end

@@ -1,15 +1,4 @@
     # music controls
-      print 'connecting to MPD... ',
-      begin
-        require 'rubygems'
-        require 'librmpd'
-
-        @mpd = MPD.new
-        @mpd.connect(true) # true keeps connection alive
-      rescue => e
-        puts e # ignore
-      end
-
       key(Key::PREFIX + 'x')  { @mpd.previous }
       key(Key::PREFIX + 'y')   { @mpd.next }
 
