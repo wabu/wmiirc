@@ -1,6 +1,6 @@
     # music controls
-      key(Key::PREFIX + 'x')  { @mpd.previous }
-      key(Key::PREFIX + 'y')   { @mpd.next }
+      key(Key::PREFIX + 'y')  { @mpd.previous }
+      key(Key::PREFIX + 'x')   { @mpd.next }
 
       key Key::PREFIX + 'c' do # play / pause
         if @mpd.stopped?
