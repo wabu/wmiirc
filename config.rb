@@ -82,8 +82,20 @@ end
 #   Instruction on what the user should enter or choose.
 #
 def key_menu choices, prompt = nil
-  # TODO: use history files?
-  command = "wimenu -p '#{prompt}'"
+  words = %w[dmenu -b -fn].push(CONFIG['display']['font'])
+
+  words.concat %w[-nf -nb -sf -sb].zip(
+    [
+      CONFIG['display']['color']['normal'],
+      CONFIG['display']['color']['focus'],
+
+    ].map {|c| c.to_s.split[0,2] }.flatten
+
+  ).flatten
+
+  words.push '-p', prompt if prompt
+
+  command = shell_join(words)
   IO.popen(command, 'r+') do |menu|
     menu.puts choices
     menu.close_write
@@ -254,7 +266,6 @@ def load_config_file config_file
 
     # status
       action 'status' do
-        fs.rbar.clear
         unless defined? @status_button_by_name
           @status_button_by_name = {}
 
