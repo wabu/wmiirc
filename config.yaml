@@ -88,7 +88,7 @@ display:
   status:
     clock:
       refresh: 5
-      content: Time.now.to_s
+      content: Time.now.strftime("%a %b %d %H:%M:%S")
 
     cpu_load:
       refresh: 10
@@ -99,6 +99,9 @@ display:
       content: |
         ['dB', `ossmix vmix0-outvol`.scan(/\d{1,2}.\d/).first]
 
+    battmon:
+      refresh: 60
+      content: battmon
     music:
       refresh: 15
       content: |
