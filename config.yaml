@@ -73,7 +73,7 @@ display:
   client:
     !ruby/regexp '/\b(Buddy List|XChat|WeeChat)\b/'       : chat
     !ruby/regexp '/\b(Liferea|GMail)\b/'                  : mail
-    !ruby/regexp '/\bRestore (Previous )?Session\b/'      : web
+    !ruby/regexp '/\bRestore (Previous )?Session\b/'      : net
 
   ##
   # Self-refreshing buttons on the status bar.
@@ -337,7 +337,7 @@ control:
     # group
     #---------------------------------------------------------------------------
 
-    Mod4-g,c: | # add current client to grouping (toggle)
+    Mod4-g,g: | # add current client to grouping (toggle)
       curr_client.group!
 
     Mod4-g,a: | # add clients in current area to grouping (toggle)
