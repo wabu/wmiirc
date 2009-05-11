@@ -102,6 +102,7 @@ display:
     battmon:
       refresh: 60
       content: battmon
+
     music:
       refresh: 15
       content: |
