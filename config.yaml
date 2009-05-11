@@ -42,8 +42,8 @@ display:
   #   http://wmii.suckless.org/scripts_n_snips/themes
   #
   color:
-    normal:   "#c0c0c0 #0a0a0a #202020"
-    focus:    "#ffffff #285577 #4c7899"
+    normal:   "#001122 #EEEEEF #CCCCEA"
+    focus:    "#001122 #FFDD56 #FFAA11"
     error:    "#8a1f11 #FBE3E4 #FBC2C4" # from http://www.blueprintcss.org
     notice:   "#514721 #FFF6BF #FFD324" # from http://www.blueprintcss.org
     success:  "#264409 #E6EFC2 #C6D880" # from http://www.blueprintcss.org
@@ -51,7 +51,7 @@ display:
   ##
   # Color of desktop background.
   #
-  background: "#333333"
+  background: "#eeeeef"
 
   ##
   # Settings for columns drawn by wmii.
@@ -71,7 +71,6 @@ display:
   #   !ruby/regexp '<client label>' : <tags to apply>
   #
   client:
-    !ruby/regexp '/\b(xconsole|alsamixer|XMMS|Sonata)\b/' : 1
     !ruby/regexp '/\b(Buddy List|XChat|WeeChat)\b/'       : chat
     !ruby/regexp '/\b(Liferea|GMail)\b/'                  : mail
     !ruby/regexp '/\bRestore (Previous )?Session\b/'      : web
@@ -618,8 +617,12 @@ control:
 
     LeftBarClick: &LeftBarClick |
       mouse_button, view_id = argv
-
-      if mouse_button == '1' # primary button
+      case mouse_button.to_i
+      when 4 then
+        prev_view.focus
+      when 5 then
+        next_view.focus
+      else 
         focus_view view_id
       end
 
@@ -683,10 +686,9 @@ control:
 
     ClientMouseDown: |
       client_id, mouse_button = argv
-
-      if mouse_button == '3' # secondary button
+      case mouse_button.to_i
+      when 3 then
         client = Client.new(client_id)
-
         case click_menu %w[stick group fullscreen kill slay], 'client'
         when 'stick'      then client.stick!
         when 'group'      then client.group!
@@ -694,6 +696,14 @@ control:
         when 'kill'       then client.kill
         when 'slay'       then client.slay
         end
+      when 4 then
+        curr_view.select(:up) rescue nil
+      when 5 then
+        curr_view.select(:down) rescue nil
+      when 6 then
+        grouping.each {|c| c.send(:left) rescue nil }
+      when 7 then
+        grouping.each {|c| c.send(:right) rescue nil }
       end
 
   ##
@@ -733,6 +743,9 @@ control:
     quit: | # kill both clients and window manager
       action 'clear'
       action 'kill'
+
+    reload: | # reload config
+      exec File.join(File.dirname(__FILE__),'wmiirc')
 
 
 ##
