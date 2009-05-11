@@ -233,25 +233,8 @@ def load_config_file config_file
     # column
       fs.colrules.write CONFIG['display']['column']['rule']
 
-    # client
-      event 'CreateClient' do |client_id|
-        client = Client.new(client_id)
-
-        if label = client.label.read rescue nil
-          catch :found do
-            CONFIG['display']['client'].each do |regexp, target|
-              if label =~ regexp
-                client.tags = target
-                throw :found
-              end
-            end
-
-            # force client onto current view
-            client.tags = curr_tag
-            client.focus
-          end
-        end
-      end
+    # tag
+      fs.tagrules.write CONFIG['display']['tag']['rule']
 
     # status
       action 'status' do

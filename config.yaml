@@ -60,20 +60,26 @@ display:
   #   rule: <the wmii "colrules" setting>
   #
   column:
-    mode: stack
+    mode: default
     rule: |
-      /gimp/ -> 17+83+41
+      /art/ -> 17+83+17
       /.*/   -> 62+38 # Golden Ratio
 
   ##
-  # Mapping of clients to views they must appear on:
+  # Settings for taging clients
   #
-  #   !ruby/regexp '<client label>' : <tags to apply>
+  #   rule: <the wmii "tagrules" setting>
   #
-  client:
-    !ruby/regexp '/\b(Buddy List|XChat|WeeChat)\b/'       : chat
-    !ruby/regexp '/\b(Liferea|GMail)\b/'                  : mail
-    !ruby/regexp '/\bRestore (Previous )?Session\b/'      : net
+  tag:
+    rule: |
+      /xfce4-panel:Xfce4-panel/ -> /.*/
+      /xfce4-dict-plugin:Xfce4-dict-plugin/ -> /.*/
+      /orage:Orage/ -> /.*/
+      /gimp:Gimp:Color Picker/ -> ~
+      /gimp:Gimp:Open.*/ -> ~
+      /gimp/ -> art
+      /MPlayer/ -> ~
+      /./ -> sel
 
   ##
   # Self-refreshing buttons on the status bar.
