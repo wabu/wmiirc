@@ -259,16 +259,16 @@ control:
     # swap
     #---------------------------------------------------------------------------
 
-    Mod4-w,t: | # swap with above client
+    Mod4-w,k: | # swap with above client
       curr_client.swap(:up) rescue nil
 
-    Mod4-w,n: | # swap with below client
+    Mod4-w,j: | # swap with below client
       curr_client.swap(:down) rescue nil
 
     Mod4-w,h: | # swap with left client
       curr_client.swap(:left) rescue nil
 
-    Mod4-w,s: | # swap with right client
+    Mod4-w,l: | # swap with right client
       curr_client.swap(:right) rescue nil
 
     # swap current client with the column whose index equals the pressed number
