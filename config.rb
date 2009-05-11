@@ -5,8 +5,7 @@
 #++
 
 require 'rubygems'
-gem 'rumai', '~> 3'
-require 'rumai'
+require File.join(File.dirname(__FILE__), 'rumai/lib/rumai.rb')
 
 include Rumai
 
