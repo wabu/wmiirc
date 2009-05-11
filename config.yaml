@@ -178,6 +178,9 @@ control:
     Control-XF86Forward: | # focus next view
       next_view.focus
 
+    Mod4-Shift-space: | # toggle floating
+      curr_client.send :toggle
+
     Mod4-q: | # kill current client
       curr_client.kill
 
