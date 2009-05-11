@@ -232,22 +232,22 @@ control:
     # move
     #---------------------------------------------------------------------------
 
-    Mod4-m,k: | # move grouping toward the top
+    Mod4-Shift-k: | # move grouping toward the top
       grouping.each {|c| c.send(:up) rescue nil }
 
-    Mod4-m,j: | # move grouping toward the bottom
+    Mod4-Shift-j: | # move grouping toward the bottom
       grouping.each {|c| c.send(:down) rescue nil }
 
-    Mod4-m,h: | # move grouping toward the left
+    Mod4-Shift-h: | # move grouping toward the left
       grouping.each {|c| c.send(:left) rescue nil }
 
-    Mod4-m,l: | # move grouping toward the right
+    Mod4-Shift-l: | # move grouping toward the right
       grouping.each {|c| c.send(:right) rescue nil }
 
-    Mod4-m,space: | # move grouping to floating area (toggle)
+    Mod4-Shift-space: | # move grouping to floating area (toggle)
       grouping.each {|c| c.send(:toggle) rescue nil }
 
-    Mod4-m,v: | # move grouping to chosen view
+    Mod4-Shift-v: | # move grouping to chosen view
       #
       # Changes the tag (according to a menu choice) of
       # each grouped client and returns the chosen tag.
@@ -268,73 +268,73 @@ control:
         end
       end
 
-    Mod4-m,Delete: | # kill all clients in grouping
+    Mod4-Shift-c: | # kill all clients in grouping
       grouping.each {|c| c.kill }
 
     # move grouping to the view whose index or name equals the pressed number
-    Mod4-m,1: grouping.each {|c| c.tags = tags[0] || 1  }
-    Mod4-m,2: grouping.each {|c| c.tags = tags[1] || 2  }
-    Mod4-m,3: grouping.each {|c| c.tags = tags[2] || 3  }
-    Mod4-m,4: grouping.each {|c| c.tags = tags[3] || 4  }
-    Mod4-m,5: grouping.each {|c| c.tags = tags[4] || 5  }
-    Mod4-m,6: grouping.each {|c| c.tags = tags[5] || 6  }
-    Mod4-m,7: grouping.each {|c| c.tags = tags[6] || 7  }
-    Mod4-m,8: grouping.each {|c| c.tags = tags[7] || 8  }
-    Mod4-m,9: grouping.each {|c| c.tags = tags[8] || 9  }
-    Mod4-m,0: grouping.each {|c| c.tags = tags[9] || 10 }
+    Mod4-Shift-1: grouping.each {|c| c.tags = tags[0] || 1  }
+    Mod4-Shift-2: grouping.each {|c| c.tags = tags[1] || 2  }
+    Mod4-Shift-3: grouping.each {|c| c.tags = tags[2] || 3  }
+    Mod4-Shift-4: grouping.each {|c| c.tags = tags[3] || 4  }
+    Mod4-Shift-5: grouping.each {|c| c.tags = tags[4] || 5  }
+    Mod4-Shift-6: grouping.each {|c| c.tags = tags[5] || 6  }
+    Mod4-Shift-7: grouping.each {|c| c.tags = tags[6] || 7  }
+    Mod4-Shift-8: grouping.each {|c| c.tags = tags[7] || 8  }
+    Mod4-Shift-9: grouping.each {|c| c.tags = tags[8] || 9  }
+    Mod4-Shift-0: grouping.each {|c| c.tags = tags[9] || 10 }
 
     #---------------------------------------------------------------------------
     # swap
     #---------------------------------------------------------------------------
 
-    Mod4-w,k: | # swap with above client
+    Mod4-Control-k: | # swap with above client
       curr_client.swap(:up) rescue nil
 
-    Mod4-w,j: | # swap with below client
+    Mod4-Control-j: | # swap with below client
       curr_client.swap(:down) rescue nil
 
-    Mod4-w,h: | # swap with left client
+    Mod4-Control-h: | # swap with left client
       curr_client.swap(:left) rescue nil
 
-    Mod4-w,l: | # swap with right client
+    Mod4-Control-l: | # swap with right client
       curr_client.swap(:right) rescue nil
 
     # swap current client with the column whose index equals the pressed number
-    Mod4-w,1: curr_client.swap 1
-    Mod4-w,2: curr_client.swap 2
-    Mod4-w,3: curr_client.swap 3
-    Mod4-w,4: curr_client.swap 4
-    Mod4-w,5: curr_client.swap 5
-    Mod4-w,6: curr_client.swap 6
-    Mod4-w,7: curr_client.swap 7
-    Mod4-w,8: curr_client.swap 8
-    Mod4-w,9: curr_client.swap 9
-    Mod4-w,0: curr_client.swap 10
+    Mod4-Control-1: curr_client.swap 1
+    Mod4-Control-2: curr_client.swap 2
+    Mod4-Control-3: curr_client.swap 3
+    Mod4-Control-4: curr_client.swap 4
+    Mod4-Control-5: curr_client.swap 5
+    Mod4-Control-6: curr_client.swap 6
+    Mod4-Control-7: curr_client.swap 7
+    Mod4-Control-8: curr_client.swap 8
+    Mod4-Control-9: curr_client.swap 9
+    Mod4-Control-0: curr_client.swap 10
 
     #---------------------------------------------------------------------------
     # column
     #---------------------------------------------------------------------------
 
-    Mod4-z,w: | # apply equal-spacing layout to current column
+    Mod4-w: | # apply equal-spacing layout to current column
       curr_area.layout = :default
 
-    Mod4-z,Shift-w: | # apply equal-spacing layout to all columns
+    Mod4-Shift-w: | # apply equal-spacing layout to all columns
       curr_view.columns.each do |a|
         a.layout = :default
       end
 
-    Mod4-z,v: | # apply stacked layout to current column
+    Mod4-s: | # apply stacked layout to current column
       curr_area.layout = 'stack-max'
 
-    Mod4-z,Shift-v: | # apply stacked layout to all columns
+    Mod4-Shift-s: | # apply stacked layout to all columns
       curr_view.columns.each do |a|
         a.layout = 'stack-max'
       end
 
-    Mod4-z,m: | # apply maximized layout to current column
+    Mod4-m: | # apply maximized layout to current column
       curr_area.layout = 'stack+max'
 
-    Mod4-z,Shift-m: | # apply maximized layout to all columns
+    Mod4-Shift-m: | # apply maximized layout to all columns
       curr_view.columns.each do |a|
         a.layout = 'stack+max'
       end
@@ -357,6 +357,9 @@ control:
 
     Mod4-g,m: | # add clients in managed areas to grouping (toggle)
       curr_view.columns.each {|a| a.group! }
+
+    Mod4-g,d: | # add detached clients to group
+      View.new(DETACHED_TAG).group!
 
     Mod4-g,n: | # remove all clients everywhere from grouping
       Rumai.ungroup
@@ -692,9 +695,9 @@ control:
 
     ClientMouseDown: |
       client_id, mouse_button = argv
+      client = Client.new(client_id)
       case mouse_button.to_i
       when 3 then
-        client = Client.new(client_id)
         case click_menu %w[stick group fullscreen kill slay], 'client'
         when 'stick'      then client.stick!
         when 'group'      then client.group!
@@ -710,6 +713,14 @@ control:
         grouping.each {|c| c.send(:left) rescue nil }
       when 7 then
         grouping.each {|c| c.send(:right) rescue nil }
+      when 8 then
+        grouping.each {|c| c.kill }
+      when 9 then
+        if client.group?
+          Rumai.ungroup
+        else
+          client.group!
+        end
       end
 
   ##
