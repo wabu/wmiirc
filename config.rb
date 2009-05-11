@@ -4,8 +4,9 @@
 # See the LICENSE file for details.
 #++
 
-require 'rubygems'
-gem 'rumai', '~> 3'
+$:<< "#{ENV['HOME']}/.wmii-hg/rumai/lib"
+#require 'rubygems'
+#gem 'rumai', '~> 3'
 require 'rumai'
 
 include Rumai
