@@ -204,6 +204,18 @@ control:
     # move
     #---------------------------------------------------------------------------
 
+    Mod4-Shift-h: | # move client to the left
+      curr_client.send(:left) rescue nil
+
+    Mod4-Shift-l: | # move client to the right
+      curr_client.send(:right) rescue nil
+
+    Mod4-Shift-j: | # move client down
+      curr_client.send(:down) rescue nil
+
+    Mod4-Shift-k: | # move client up
+      curr_client.send(:up) rescue nil
+
     Mod4-m,t: | # move grouping toward the top
       grouping.each {|c| c.send(:up) rescue nil }
 
@@ -254,6 +266,18 @@ control:
     Mod4-m,8: grouping.each {|c| c.tags = tags[7] || 8  }
     Mod4-m,9: grouping.each {|c| c.tags = tags[8] || 9  }
     Mod4-m,0: grouping.each {|c| c.tags = tags[9] || 10 }
+
+    # again for single clients
+    Mod4-Shift-1: curr_client.tags = tags[0] || 1
+    Mod4-Shift-2: curr_client.tags = tags[1] || 2
+    Mod4-Shift-3: curr_client.tags = tags[2] || 3
+    Mod4-Shift-4: curr_client.tags = tags[3] || 4
+    Mod4-Shift-5: curr_client.tags = tags[4] || 5
+    Mod4-Shift-6: curr_client.tags = tags[5] || 6
+    Mod4-Shift-7: curr_client.tags = tags[6] || 7
+    Mod4-Shift-8: curr_client.tags = tags[7] || 8
+    Mod4-Shift-9: curr_client.tags = tags[8] || 9
+    Mod4-Shift-0: curr_client.tags = tags[9] || 10
 
     #---------------------------------------------------------------------------
     # swap
