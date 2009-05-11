@@ -446,12 +446,12 @@ control:
 
       if choice = key_menu(choices, 'run action:')
         action(choice) or     # action is a Ruby block
-        system(choice << '&') # action is a program
+        system_run(choice) # action is a program
       end
 
     Mod4-a: | # run external program chosen from a menu
       if choice = key_menu(@program_menu, 'run program:')
-        system(choice << '&')
+        system_run(choice)
       end
 
     Mod4-u: | # focus view chosen from a menu
@@ -505,7 +505,7 @@ control:
 
       require 'fileutils'
       FileUtils.cd root do
-        system 'urxvtc &'
+        system_run 'urxvtc'
       end
 
     #---------------------------------------------------------------------------
@@ -538,15 +538,15 @@ control:
     #---------------------------------------------------------------------------
 
     XF86AudioRaiseVolume: | # increase volume
-      system 'ossmix vmix0-outvol -- +1'
+      system_run 'ossmix vmix0-outvol -- +1'
       status 'volume'
 
     XF86AudioLowerVolume: | # decrease volume
-      system 'ossmix vmix0-outvol -- -1'
+      system_run 'ossmix vmix0-outvol -- -1'
       status 'volume'
 
     XF86AudioMute: | # mute volume (toggle)
-      system 'ossmix misc.lineout-mix.mute.front TOGGLE'
+      system_run 'ossmix misc.lineout-mix.mute.front TOGGLE'
       status 'volume'
 
   ##
@@ -682,10 +682,10 @@ control:
     clear: | # kill all clients
       # firefox's restore session feature does not
       # work unless the whole process is killed.
-      system 'killall firefox firefox-bin thunderbird thunderbird-bin &'
+      system_run 'killall firefox firefox-bin thunderbird thunderbird-bin'
 
       # gnome-panel refuses to die by any other means
-      system 'killall -s TERM gnome-panel &'
+      system_run 'killall -s TERM gnome-panel'
 
       Thread.pass until clients.each do |c|
         begin
@@ -716,5 +716,5 @@ script: |
   action 'rehash'
 
   # desktop wallpaper
-  system 'sh ~/.fehbg &'
+  system_run 'sh ~/.fehbg'
 

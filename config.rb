@@ -6,6 +6,7 @@
 
 require 'rubygems'
 require File.join(File.dirname(__FILE__), 'rumai/lib/rumai.rb')
+require 'shellwords'
 
 include Rumai
 
@@ -93,7 +94,7 @@ def key_menu choices, prompt = nil
 
   words.push '-p', prompt if prompt
 
-  command = shell_join(words)
+  command = words.shelljoin
   IO.popen(command, 'r+') do |menu|
     menu.puts choices
     menu.close_write
@@ -137,18 +138,18 @@ def click_menu choices, initial = nil
   end
 
   words.concat choices
-  command = shell_join(words)
+  command = words.shelljoin
 
   choice = `#{command}`.chomp
   choice unless choice.empty?
 end
 
 ##
-# Joins the given array of words into a properly quoted shell command.
+# Runs and forks a command for the sh
 #
-def shell_join words
-  # TODO: properly shell escape these items instead of doing String#inspect
-  words.map {|c| c.to_s.inspect }.join(' ')
+
+def system_run(command)
+  fork {system command}
 end
 
 require 'pathname'
@@ -237,7 +238,7 @@ def load_config_file config_file
 
     fs.ctl.write settings.map {|pair| pair.join(' ') }.join("\n")
 
-    system "xsetroot -solid #{CONFIG['display']['background'].inspect} &"
+    system_run "xsetroot -solid #{CONFIG['display']['background'].inspect} &"
 
     # column
       fs.colrules.write CONFIG['display']['column']['rule']
