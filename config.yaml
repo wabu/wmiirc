@@ -20,7 +20,7 @@ display:
   ##
   # The font to use in all text drawn by wmii.
   #
-  font: -*-fixed-medium-r-*-*-18-*-*-*-*-*-*-*
+  font: -*-dejavu sans mono-*-r-*-*-14-*-*-*-*-*-*-*
 
   ##
   # Thickness of client border (measured in pixels).
@@ -42,8 +42,8 @@ display:
   #   http://wmii.suckless.org/scripts_n_snips/themes
   #
   color:
-    normal:   "#c0c0c0 #0a0a0a #202020"
-    focus:    "#ffffff #285577 #4c7899"
+    normal:   "#5ad25a #000000 #202020"
+    focus:    "#ffffff #000000 #5ad25a"
     error:    "#8a1f11 #FBE3E4 #FBC2C4" # from http://www.blueprintcss.org
     notice:   "#514721 #FFF6BF #FFD324" # from http://www.blueprintcss.org
     success:  "#264409 #E6EFC2 #C6D880" # from http://www.blueprintcss.org
