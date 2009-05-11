@@ -1,22 +1,55 @@
-This is my Ruby-based wmii configuration, explained in these articles:
+sunaku's Ruby wmiirc
+====================
+
+This is my wmii configuration, described in these articles:
+
+  http://wmii.suckless.org/alternative_wmiirc_scripts
 
   http://snk.tuxfamily.org/lib/rumai/
+
+  http://article.gmane.org/gmane.comp.window-managers.wmii/1704
 
   http://snk.tuxfamily.org/web/2006-07-01-wmii-3-1-configuration-in-ruby.html
 
 Dependencies:
 
-    git clone git://github.com/sunaku/rumai.git ~/wmii-3.5/rumai
+    Ruby 1.8.6 or newer
 
-    gem install librmpd
+    RubyGems 1.3.1 or newer
+
+    wmii-3.6 or newer (preferably wmii-hg)
 
 Installation:
 
+    # required libraries
+    gem install rumai librmpd
+
+    # the wmiirc itself
+    mv ~/.wmii-hg ~/.wmii-hg.backup
+    git clone git://github.com/sunaku/wmiirc.git ~/.wmii-hg
+
+    # alias for older wmii
     mv ~/.wmii-3.5 ~/.wmii-3.5.backup
+    ln -s ~/.wmii-hg ~/.wmii-3.5
 
-    git clone git://github.com/Tass/wmiirc.git ~/.wmii-3.5
+    # enjoy the goods!
+    ~/.wmii-hg/wmiirc
 
-    chmod +x ~/.wmii-3.5/wmiirc
+Documentation:
 
-    ~/.wmii-3.5/wmiirc
+    # see list of all key bindings
+    grep 'Mod1.*#' ~/.wmii-hg/config.yaml
+
+    # read the configuration file
+    less ~/.wmii-hg/config.yaml
+
+Configuration:
+
+    Edit ~/.wmii-hg/config.yaml to your liking.
+
+    Run ~/.wmii-hg/wmiirc to apply your changes.
+
+Questions:
+
+    Send me an e-mail; see LICENSE for my address.
 
