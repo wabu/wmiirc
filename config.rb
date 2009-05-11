@@ -150,7 +150,7 @@ end
 #
 
 def system_run(command)
-  fork {system command}
+  system(command << '&')
 end
 
 require 'pathname'
