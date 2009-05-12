@@ -115,7 +115,7 @@ display:
       position: 50
       refresh: 60
       content: |
-        ['dB', `ossmix vmix0-outvol`.scan(/\d{1,2}.\d/).first]
+       ['volume', `amixer get Master`.scan(/\d+%/).first]
 
     battmon:
       position: 10
@@ -821,19 +821,12 @@ control:
         end
       end.empty?
 
-    reload: | # reload the wmii config
-      Process.kill("HUP", Process.pid)
-
     kill: | # kill the window manager only; do not touch the clients!
       fs.ctl.write 'quit'
 
     quit: | # kill both clients and window manager
       action 'clear'
       action 'kill'
-
-    reload: | # reload config
-      exec File.join(File.dirname(__FILE__),'wmiirc')
-
 
 ##
 # Arbitrary logic.
