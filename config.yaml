@@ -68,10 +68,10 @@ display:
   ##
   # Mapping of clients to views they must appear on:
   #
-  #   !ruby/regexp '<client label>' : <tags to apply>
+  #   <client props regular expression> : <tags to apply>
   #
   client:
-    !ruby/regexp '/\b(Quassel|Kontact|Konqueror)\b/'      : 2
+    /\b(Quassel|Kontact|Konqueror)\b/      : 2
 
   ##
   # Self-refreshing buttons on the status bar.
