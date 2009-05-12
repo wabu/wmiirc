@@ -78,6 +78,7 @@ display:
   #
   #   <IXP node basename>:
   #     position: <index of this button on the status bar> # (optional)
+  #       from the left of the panel
   #     refresh:  <number of seconds to wait before refreshing the content>
   #     content:  <Ruby code whose result is displayed as the content>
   #
@@ -87,27 +88,28 @@ display:
   #
   status:
     clock:
-      position: 5
+      position: 99
       refresh: 5
       content: Time.now.strftime("%a %b %d %H:%M:%S")
 
     cpu_load:
-      position: 4
+      position: 90
       refresh: 10
       content: File.read('/proc/loadavg').split.first(3).unshift('load')
 
     volume:
-      position: 1
+      position: 50
       refresh: 60
       content: |
         ['dB', `ossmix vmix0-outvol`.scan(/\d{1,2}.\d/).first]
 
     battmon:
+      position: 10
       refresh: 60
       content: battmon
 
     music:
-      position: 2
+      position: 70
       refresh: 15
       content: |
         unless defined? @music
