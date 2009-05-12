@@ -519,7 +519,7 @@ control:
       end
 
     Mod4-p: | # run external program chosen from a menu
-      if choice = key_menu(@program_menu, 'run program:')
+      if choice = key_menu(@programs, 'run program:')
         system_run(choice)
       end
 
