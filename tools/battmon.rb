@@ -10,7 +10,7 @@ def battmon
   return "N/A" unless present
   case state
   when "discharging"
-    text = "%d:%02d" % rem_run.to_i.divmod(60)
+    text = "v%d:%02dv" % rem_run.to_i.divmod(60)
     color = case rem_per.to_i
     when 40..100
       CONFIG['display']['color']['success']
@@ -20,11 +20,11 @@ def battmon
       CONFIG['display']['color']['error']
     end
   when "charging"
-    color = CONFIG['display']['color']['normal']
-    text = "%d:%02d" % rem_charge.to_i.divmod(60)
+    color = CONFIG['display']['color']['success']
+    text = "^%d:%02d^" % rem_charge.to_i.divmod(60)
   when "idle"
     color = CONFIG['display']['color']['normal']
-    text = "idle"
+    text = "-idle-"
   end
   return [color, text]
 end
