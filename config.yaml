@@ -117,6 +117,10 @@ display:
       content: |
        ['volume', `amixer get Master`.scan(/\d+%/).first]
 
+    battmon:
+      position: 92
+      refresh: 60
+      content: battmon
 
 ##
 # Interaction settings.
@@ -721,6 +725,8 @@ control:
       client_id, mouse_button = argv
       client = Client.new(client_id)
       case mouse_button.to_i
+      when 1 then
+        client.focus
       when 3 then
         case click_menu %w[stick group fullscreen kill slay], 'client'
         when 'stick'      then client.stick!
