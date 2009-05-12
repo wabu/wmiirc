@@ -13,17 +13,17 @@ def battmon
     text = "%d:%02d" % rem_run.to_i.divmod(60)
     color = case rem_per.to_i
     when 40..100
-      "#00ff00 #000000 #202020"
+      CONFIG['display']['color']['success']
     when 10..39
-      "#ffff00 #000000 #202020"
+      CONFIG['display']['color']['notice']
     when 0..9
-      "#ff0000 #000000 #202020"
+      CONFIG['display']['color']['error']
     end
   when "charging"
-    color = "#0000ff #000000 #202020"
+    color = CONFIG['display']['color']['normal']
     text = "%d:%02d" % rem_charge.to_i.divmod(60)
   when "idle"
-    color = "#0000ff #000000 #202020"
+    color = CONFIG['display']['color']['normal']
     text = "idle"
   end
   return [color, text]
