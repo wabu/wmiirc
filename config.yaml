@@ -509,6 +509,29 @@ control:
     Mod4-z,9: curr_view.arrange_in_grid 9
     Mod4-z,0: curr_view.arrange_in_grid 9999 # make one giant column
 
+    Mod4-z,z: | # collapse with the client above
+      curr_view.ctl.write "grow sel sel up +9999"
+    Mod4-z,x: | # collapse with the client below
+      curr_view.ctl.write "grow sel sel down +9999"
+    Mod4-z,k: | # grow the current cilent upwords
+      curr_view.ctl.write "grow sel sel up +7"
+    Mod4-z,k: | # grow the current cilent upwords
+      curr_view.ctl.write "grow sel sel up +7"
+    Mod4-z,j: | # grow the current cilent downwords
+      curr_view.ctl.write "grow sel sel down +7"
+    Mod4-z,Shift-j: | # shrik the current cilent upwords
+      curr_view.ctl.write "grow sel sel up -7"
+    Mod4-z,Shift-k: | # shrink the current cilent downwords
+      curr_view.ctl.write "grow sel sel down -7"
+    Mod4-z,h: | # grow the current collumn to the left
+      curr_view.ctl.write "grow sel sel left +7"
+    Mod4-z,l: | # grow the current collumn to the right
+      curr_view.ctl.write "grow sel sel right +7"
+    Mod4-z,Shift-l: | # shrink the current collumn to the left
+      curr_view.ctl.write "grow sel sel left -7"
+    Mod4-z,Shift-h: | # shrink the current collumn to the right
+      curr_view.ctl.write "grow sel sel right -7"
+
     #---------------------------------------------------------------------------
     # menu
     #---------------------------------------------------------------------------
