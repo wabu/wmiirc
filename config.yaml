@@ -48,8 +48,8 @@ display:
   #   http://wmii.suckless.org/scripts_n_snips/themes
   #
   color:
-    normal:   "#001122 #EEEEEF #CCCCEA"
-    focus:    "#001122 #FFDD56 #FFAA11"
+    normal:   "#3A3A6A #EEEEEF #DADAEA"
+    focus:    "#2A2A4A #CECEDE #5A5A8A"
     error:    "#8a1f11 #FBE3E4 #FBC2C4" # from http://www.blueprintcss.org
     notice:   "#514721 #FFF6BF #FFD324" # from http://www.blueprintcss.org
     success:  "#264409 #E6EFC2 #C6D880" # from http://www.blueprintcss.org
