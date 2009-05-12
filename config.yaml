@@ -103,13 +103,13 @@ display:
   status:
     clock:
       position: 99
-      refresh: 5
-      content: Time.now.strftime("%a %b %d %H:%M:%S")
+      refresh: 1
+      content: Time.now.strftime("%a-%b-%d %H:%M:%S")
 
     cpu_load:
       position: 90
       refresh: 10
-      content: File.read('/proc/loadavg').split.first(3).unshift('load')
+      content: File.read('/proc/loadavg').split.first(3)
 
     volume:
       position: 50
