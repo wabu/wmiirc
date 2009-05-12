@@ -123,6 +123,11 @@ display:
       refresh: 30
       content: battmon
 
+    space:
+      position: 0
+      refresh: 60
+      content: []
+
 ##
 # Interaction settings.
 #
