@@ -111,7 +111,8 @@ display:
       position: 90
       refresh: 5
       content: |
-        a,b,c = load = File.read('/proc/loadavg').split.first(3).map{|s| s.to_f}
+        load = File.read('/proc/loadavg').split.first(3)
+        a,b,c = load.map{|s| s.to_f}
         color = 
           if c > 5.0 then CONFIG['display']['color']['error']
           elsif a > 4.0 then CONFIG['display']['color']['notice']
