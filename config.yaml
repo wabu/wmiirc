@@ -726,6 +726,9 @@ control:
         end
       end.empty?
 
+    reload: | # reload the wmii config
+      Process.kill("HUP", Process.pid)
+
     kill: | # kill the window manager only; do not touch the clients!
       fs.ctl.write 'quit'
 
