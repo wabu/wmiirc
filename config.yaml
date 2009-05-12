@@ -71,7 +71,6 @@ display:
   #   !ruby/regexp '<client label>' : <tags to apply>
   #
   client:
-    !ruby/regexp '/\b(xconsole|alsamixer|XMMS|Sonata)\b/' : 1
     !ruby/regexp '/\b(Quassel|Kontact|Konqueror)\b/'      : 2
 
   ##
