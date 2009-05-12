@@ -119,7 +119,7 @@ display:
 
     battmon:
       position: 92
-      refresh: 60
+      refresh: 30
       content: battmon
 
 ##

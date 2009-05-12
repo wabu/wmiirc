@@ -20,7 +20,7 @@ def battmon
       CONFIG['display']['color']['error']
     end
   when "charging"
-    color = CONFIG['display']['color']['success']
+    color = CONFIG['display']['color']['normal']
     text = "^%d:%02d^" % rem_charge.to_i.divmod(60)
   when "idle"
     color = CONFIG['display']['color']['normal']
