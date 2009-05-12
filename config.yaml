@@ -115,7 +115,8 @@ display:
       position: 50
       refresh: 60
       content: |
-       ['volume', `amixer get Master`.scan(/\d+%/).first]
+        per,db,state,on,off = `amixer get Master`.match(/\[(\d+%)\] \[-(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
+        [on ? "-#{db}dB" : "muted", per]
 
     battmon:
       position: 92
