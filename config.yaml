@@ -115,8 +115,8 @@ display:
       position: 50
       refresh: 60
       content: |
-        per,db,state,on,off = `amixer get Master`.match(/\[(\d+%)\] \[-(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
-        [on ? "-#{db}dB" : "muted", per]
+        per,tuned,db,state,on,off = `amixer get Master`.match(/\[(\d+)%\] \[(-)?(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
+        ["%02d%%" % per, on ? (tuned ? "-%02ddB" % db.to_i : "00dB") : (tuned ? "muted" : "mute")]
 
     battmon:
       position: 92
