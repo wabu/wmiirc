@@ -117,46 +117,6 @@ display:
       content: |
        ['volume', `amixer get Master`.scan(/\d+%/).first]
 
-    battmon:
-      position: 10
-      refresh: 60
-      content: battmon
-
-    music:
-      position: 70
-      refresh: 15
-      content: |
-        unless defined? @music
-          require 'rubygems'
-          gem 'librmpd', '~> 0.1'
-          require 'librmpd'
-
-          @music = MPD.new
-        end
-
-        unless @music.connected?
-          @music.connect
-        end
-
-        song_state = (@music.stopped? || @music.paused?) ? '(-)' : '(>)'
-
-        song       = @music.current_song
-        artist     = song.artist
-        title      = song.title || (f = song.file and File.basename(f))
-        song_name  = [artist, title].compact.join(': ')
-
-        [song_state, song_name]
-
-      # TODO: mouse events on this status button
-      click:
-        left:
-        middle:
-        right:
-
-      scroll:
-        up:
-        down:
-
 
 ##
 # Interaction settings.
