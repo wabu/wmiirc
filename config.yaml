@@ -104,7 +104,8 @@ display:
     clock:
       position: 99
       refresh: 1
-      content: Time.now.strftime("%a-%b-%d %H:%M:%S")
+      content: |
+        [CONFIG['display']['color']['focus'], Time.now.strftime("%a %d.%m. %T")]
 
     cpu_load:
       position: 90
