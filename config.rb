@@ -50,6 +50,13 @@ def event *a, &b
 end
 
 ##
+# Returns a list of registered event names.
+#
+def events
+  EVENTS.keys
+end
+
+##
 # If a block is given, registers a handler for
 # the given action and returns the handler.
 #
@@ -60,6 +67,13 @@ def action *a, &b
 end
 
 ##
+# Returns a list of registered action names.
+#
+def actions
+  ACTIONS.keys
+end
+
+##
 # If a block is given, registers a handler for
 # the given keypress and returns the handler.
 #
@@ -67,6 +81,13 @@ end
 #
 def key *a, &b
   KEYS.handle(*a, &b)
+end
+
+##
+# Returns a list of registered action names.
+#
+def keys
+  KEYS.keys
 end
 
 ##
@@ -173,11 +194,9 @@ class Button < Thread
   def initialize fs_bar_node, refresh_rate, &button_label
     raise ArgumentError, 'block must be given' unless block_given?
 
-    super(fs_bar_node) do |b|
-      b.create unless b.exist?
-
+    super(fs_bar_node) do |button|
       while true
-        data =
+        label =
           begin
             Array(button_label.call)
           rescue Exception => e
@@ -186,11 +205,12 @@ class Button < Thread
           end
 
         # provide default color
-        unless data.first =~ /(?:#[[:xdigit:]]{6} ?){3}/
-          data.unshift CONFIG['display']['color']['normal']
+        unless label.first =~ /(?:#[[:xdigit:]]{6} ?){3}/
+          label.unshift CONFIG['display']['color']['normal']
         end
 
-        b.write data.join(' ')
+        button.create unless button.exist?
+        button.write label.join(' ')
         sleep refresh_rate
       end
     end
@@ -207,7 +227,7 @@ require 'yaml'
 ##
 # Loads the given YAML configuration file.
 #
-def load_config_file config_file
+def load_config config_file
   config_data = YAML.load_file(config_file)
   Object.const_set :CONFIG, config_data
 
@@ -238,11 +258,19 @@ def load_config_file config_file
 
     # status
       action 'status' do
+        fs.rbar.clear
+
         unless defined? @status_button_by_name
           @status_button_by_name = {}
 
           CONFIG['display']['status'].each do |name, defn|
-            button = eval "Button.new(Rumai.fs.rbar[#{name.inspect}], #{defn['refresh']}) { #{defn['content']} }", TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}"
+            # buttons are displayed in the ASCII order of their IXP file names
+            file = [defn['position'], name].compact.join('-')
+
+            button = eval(
+              "Button.new(fs.rbar[#{file.inspect}], #{defn['refresh']}) { #{defn['content']} }",
+              TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}"
+            )
 
             @status_button_by_name[name] = button
           end
@@ -272,4 +300,12 @@ def load_config_file config_file
   # script
     eval CONFIG['script'], TOPLEVEL_BINDING, "#{config_file}:script"
 
+end
+
+##
+# Reloads the entire wmii configuration.
+#
+def reload_config
+  LOG.info 'reload'
+  exec $0
 end

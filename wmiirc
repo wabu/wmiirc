@@ -39,7 +39,7 @@ begin
     end
 
   # apply user configuration
-    load_config_file config_file
+    load_config config_file
 
   # setup tag bar (buttons that correspond to views)
     fs.lbar.clear
@@ -47,7 +47,7 @@ begin
     event 'FocusTag', curr_tag
 
   # register key bindings
-    fs.keys.write KEYS.keys.join("\n")
+    fs.keys.write keys.join("\n")
     event('Key') {|*a| key(*a) }
 
   # the main event loop
@@ -74,7 +74,7 @@ rescue Exception => e
     f.close_write
 
     if f.read.chomp == 'Recover'
-      system $0 + ' &'
+      reload_config
     end
   end
 

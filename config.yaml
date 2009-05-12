@@ -1,4 +1,10 @@
+#
 # High-level wmii configuration.
+#
+# Ruby code in this file has access
+# to a CONFIG constant which contains
+# the data in this configuration file.
+#
 #--
 # Copyright 2006 Suraj N. Kurapati
 # See the LICENSE file for details.
@@ -56,7 +62,7 @@ display:
   ##
   # Settings for columns drawn by wmii.
   #
-  #   mode: <the default column mode>
+  #   mode: <the wmii "colmode" setting>
   #   rule: <the wmii "colrules" setting>
   #
   column:
@@ -85,8 +91,9 @@ display:
   # Self-refreshing buttons on the status bar.
   #
   #   <IXP node basename>:
-  #     refresh: <number of seconds to wait before refreshing the content>
-  #     content: <Ruby code whose result is displayed as the content>
+  #     position: <index of this button on the status bar> # (optional)
+  #     refresh:  <number of seconds to wait before refreshing the content>
+  #     content:  <Ruby code whose result is displayed as the content>
   #
   # You can refresh a particular status button in Ruby using:
   #
@@ -94,57 +101,62 @@ display:
   #
   status:
     clock:
+      position: 5
       refresh: 5
       content: Time.now.to_s
 
     cpu_load:
+      position: 4
       refresh: 10
       content: File.read('/proc/loadavg').split.first(3).unshift('load')
 
     disk_space:
+      position: 3
       refresh: 600 # 10 minutes
       content: |
         free, used, path = `df -h ~`.split.last(3)
         [path, used, 'used', free, 'free']
 
     volume:
+      position: 2
       refresh: 60
       content: |
-        ['vol', `amixer get Master`.scan(/\d+%/).first]
+        ['volume', `amixer get Master`.scan(/\d+%/).first]
 
-    #music:
-    #  refresh: 15
-    #  content: |
-    #    unless defined? @music
-    #      require 'rubygems'
-    #      gem 'librmpd', '~> 0.1'
-    #      require 'librmpd'
+    music:
+      position: 1
+      refresh: 15
+      content: |
+        unless defined? @music
+          require 'rubygems'
+          gem 'librmpd', '~> 0.1'
+          require 'librmpd'
 
-    #      @music = MPD.new
-    #    end
+          @music = MPD.new
+        end
 
-    #    unless @music.connected?
-    #      @music.connect
-    #    end
+        unless @music.connected?
+          @music.connect
+        end
 
-    #    song_state = (@music.stopped? || @music.paused?) ? '(-)' : '(>)'
+        song_state = (@music.stopped? || @music.paused?) ? '(-)' : '(>)'
 
-    #    song       = @music.current_song
-    #    artist     = song.artist
-    #    title      = song.title || (f = song.file and File.basename(f))
-    #    song_name  = [artist, title].compact.join(': ')
+        song       = @music.current_song
+        artist     = song.artist
+        title      = song.title || (f = song.file and File.basename(f))
+        song_name  = [artist, title].compact.join(': ')
 
-    #    [song_state, song_name]
+        [song_state, song_name]
 
-    #  # TODO: mouse events on this status button
-    #  click:
-    #    left:
-    #    middle:
-    #    right:
+      # TODO: mouse events on this status button
+      click:
+        left:
+        middle:
+        right:
 
-    #  scroll:
-    #    up:
-    #    down:
+      scroll:
+        up:
+        down:
 
 
 ##
@@ -343,20 +355,38 @@ control:
     # group
     #---------------------------------------------------------------------------
 
-    Mod4-g,g: | # add current client to grouping (toggle)
+    Mod4-g,g: | # toggle current client from grouping
       curr_client.group!
 
-    Mod4-g,a: | # add clients in current area to grouping (toggle)
-      curr_area.group!
+    Mod4-g,c: | # add clients in current area to grouping
+      curr_area.group
 
-    Mod4-g,f: | # add clients in floating area to grouping (toggle)
-      Area.floating.group!
+    Mod4-g,Shift-c: | # remove clients in current area from grouping
+      curr_area.ungroup
 
-    Mod4-g,v: | # add clients in current view to grouping (toggle)
+    Mod4-g,f: | # add clients in floating area to grouping
+      Area.floating.group
+
+    Mod4-g,Shift-f: | # remove clients in floating area from grouping
+      Area.floating.ungroup
+
+    Mod4-g,m: | # add clients in managed areas to grouping
+      curr_view.managed_areas.each {|a| a.group }
+
+    Mod4-g,Shift-m: | # remove clients in managed areas from grouping
+      curr_view.managed_areas.each {|a| a.ungroup }
+
+    Mod4-g,v: | # add clients in current view to grouping
+      curr_view.group
+
+    Mod4-g,Shift-v: | # remove clients in current view from grouping
+      curr_view.ungroup
+
+    Mod4-g,i: | # invert the grouping in the current view
       curr_view.group!
 
-    Mod4-g,m: | # add clients in managed areas to grouping (toggle)
-      curr_view.columns.each {|a| a.group! }
+    Mod4-g,Shift-i: | # invert the grouping in all views
+      Rumai.group!
 
     Mod4-g,d: | # add detached clients to group
       View.new(DETACHED_TAG).group!
@@ -479,16 +509,13 @@ control:
     #---------------------------------------------------------------------------
 
     Mod4-i: | # run internal action chosen from a menu
-      choices = @action_menu + ACTIONS.keys
-
-      if choice = key_menu(choices, 'run action:')
-        action(choice) or     # action is a Ruby block
-        system(choice << '&') # action is a program
+      if choice = key_menu(actions, 'run action:')
+        action choice
       end
 
     Mod4-e: | # run external program chosen from a menu
-      if choice = key_menu(@program_menu, 'run program:')
-        system(choice << '&')
+      if choice = key_menu(@programs, 'run program:')
+        system choice << '&'
       end
 
     Mod4-u: | # focus view chosen from a menu
@@ -733,9 +760,11 @@ control:
       if choice = key_menu(['wmii'], 'exec:')
         fs.ctl.write "exec #{choice}"
       end
+    reload: | # reload this wmii configuration
+      reload_config
+
     rehash: | # scan for available programs and actions
-      @program_menu = find_programs(ENV['PATH'].squeeze(':').split(':'))
-      @action_menu  = find_programs(File.dirname(__FILE__))
+      @programs = find_programs(ENV['PATH'].squeeze(':').split(':'))
 
     clear: | # kill all clients
       # firefox's restore session feature does not
