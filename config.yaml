@@ -479,11 +479,8 @@ control:
     #---------------------------------------------------------------------------
 
     Mod4-i: | # run internal action chosen from a menu
-      choices = @action_menu + ACTIONS.keys
-
-      if choice = key_menu(choices, 'run action:')
-        action(choice) or     # action is a Ruby block
-        system_run(choice) # action is a program
+      if choice = key_menu(ACTIONS.keys, 'run action:')
+        action choice
       end
 
     Mod4-a: | # run external program chosen from a menu
@@ -716,8 +713,7 @@ control:
       reload_config
 
     rehash: | # scan for available programs and actions
-      @program_menu = find_programs(ENV['PATH'].squeeze(':').split(':'))
-      @action_menu  = find_programs(File.dirname(__FILE__))
+      @programs = find_programs(ENV['PATH'].squeeze(':').split(':'))
 
     clear: | # kill all clients
       # firefox's restore session feature does not
