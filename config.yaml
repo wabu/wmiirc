@@ -582,7 +582,6 @@ control:
       # as the currently focused terminal.
       #
       root = ENV['HOME']
-
       label = curr_client.label.read rescue ''
       # VIM workaround
       label = label[/\(([^)]+)\)/, 1] if label =~ /VIM/
@@ -776,8 +775,14 @@ control:
         curr_view.select(:down) rescue nil
       when 6 then
         grouping.each {|c| c.send(:left) rescue nil }
+        if View.curr.manifest =~ /# \d+ (\d+) \d+(\n[^#].*)*#{curr_client.id} (\d+)/
+          system "swarp #{$1.to_i + 4} #{$3.to_i + 4}"
+        end
       when 7 then
         grouping.each {|c| c.send(:right) rescue nil }
+        if View.curr.manifest =~ /# \d+ (\d+) \d+(\n[^#].*)*#{curr_client.id} (\d+)/
+          system "swarp #{$1.to_i + 4} #{$3.to_i + 4}"
+        end
       when 8 then
         grouping.each {|c| c.kill }
       when 9 then
