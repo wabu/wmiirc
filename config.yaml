@@ -479,7 +479,7 @@ control:
     #---------------------------------------------------------------------------
 
     Mod4-i: | # run internal action chosen from a menu
-      if choice = key_menu(ACTIONS.keys, 'run action:')
+      if choice = key_menu(actions, 'run action:')
         action choice
       end
 

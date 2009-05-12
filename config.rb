@@ -51,6 +51,13 @@ def event *a, &b
 end
 
 ##
+# Returns a list of registered event names.
+#
+def events
+  EVENTS.keys
+end
+
+##
 # If a block is given, registers a handler for
 # the given action and returns the handler.
 #
@@ -61,6 +68,13 @@ def action *a, &b
 end
 
 ##
+# Returns a list of registered action names.
+#
+def actions
+  ACTIONS.keys
+end
+
+##
 # If a block is given, registers a handler for
 # the given keypress and returns the handler.
 #
@@ -68,6 +82,13 @@ end
 #
 def key *a, &b
   KEYS.handle(*a, &b)
+end
+
+##
+# Returns a list of registered action names.
+#
+def keys
+  KEYS.keys
 end
 
 ##
