@@ -92,6 +92,7 @@ display:
   #
   #   <IXP node basename>:
   #     position: <index of this button on the status bar> # (optional)
+  #       from the left of the panel
   #     refresh:  <number of seconds to wait before refreshing the content>
   #     content:  <Ruby code whose result is displayed as the content>
   #
@@ -101,30 +102,28 @@ display:
   #
   status:
     clock:
-      position: 5
+      position: 99
       refresh: 5
-      content: Time.now.to_s
+      content: Time.now.strftime("%a %b %d %H:%M:%S")
 
     cpu_load:
-      position: 4
+      position: 90
       refresh: 10
       content: File.read('/proc/loadavg').split.first(3).unshift('load')
 
-    disk_space:
-      position: 3
-      refresh: 600 # 10 minutes
-      content: |
-        free, used, path = `df -h ~`.split.last(3)
-        [path, used, 'used', free, 'free']
-
     volume:
-      position: 2
+      position: 50
       refresh: 60
       content: |
-        ['volume', `amixer get Master`.scan(/\d+%/).first]
+        ['dB', `ossmix vmix0-outvol`.scan(/\d{1,2}.\d/).first]
+
+    battmon:
+      position: 10
+      refresh: 60
+      content: battmon
 
     music:
-      position: 1
+      position: 70
       refresh: 15
       content: |
         unless defined? @music
@@ -200,6 +199,16 @@ control:
     Mod4-period: | # focus next view
       next_view.focus
 
+    Mod4-Shift-space: | # toggle floating
+      curr_client.send :toggle
+
+    Mod4-q: | # kill current client
+      curr_client.kill
+
+    Mod4-Shift-q: | # slay current client
+      curr_client.slay
+
+    # TODO: improve metaprogramming ;)
     # focus the view whose index or name equals the pressed number
     Mod4-1: focus_view( tags[0] || 1  )
     Mod4-2: focus_view( tags[1] || 2  )
@@ -240,26 +249,46 @@ control:
     Mod4-v,y: t = tags.grep(/^y/i).first and focus_view(t)
     Mod4-v,z: t = tags.grep(/^z/i).first and focus_view(t)
 
+    Mod4-v,space: | # focus view chosen from a menu
+      if choice = key_menu(tags, 'show view:')
+        focus_view choice
+      end
+
     #---------------------------------------------------------------------------
     # move
     #---------------------------------------------------------------------------
 
-    Mod4-Shift-k: | # move grouping toward the top
+    Mod4-Shift-h: | # move client to the left
+      curr_client.send(:left) rescue nil
+
+    Mod4-Shift-l: | # move client to the right
+      curr_client.send(:right) rescue nil
+
+    Mod4-Shift-j: | # move client down
+      curr_client.send(:down) rescue nil
+
+    Mod4-Shift-k: | # move client up
+      curr_client.send(:up) rescue nil
+
+    Mod4-Shift-space: | # move client up
+      curr_client.send(:toggle) rescue nil
+
+    Mod4-m,t: | # move grouping toward the top
       grouping.each {|c| c.send(:up) rescue nil }
 
-    Mod4-Shift-j: | # move grouping toward the bottom
+    Mod4-m,n: | # move grouping toward the bottom
       grouping.each {|c| c.send(:down) rescue nil }
 
-    Mod4-Shift-h: | # move grouping toward the left
+    Mod4-m,h: | # move grouping toward the left
       grouping.each {|c| c.send(:left) rescue nil }
 
-    Mod4-Shift-l: | # move grouping toward the right
+    Mod4-m,s: | # move grouping toward the right
       grouping.each {|c| c.send(:right) rescue nil }
 
-    Mod4-Shift-space: | # move grouping to floating area (toggle)
+    Mod4-m,space: | # move grouping to floating area (toggle)
       grouping.each {|c| c.send(:toggle) rescue nil }
 
-    Mod4-Shift-v: | # move grouping to chosen view
+    Mod4-m,v: | # move grouping to chosen view
       #
       # Changes the tag (according to a menu choice) of
       # each grouped client and returns the chosen tag.
@@ -280,20 +309,32 @@ control:
         end
       end
 
-    Mod4-Shift-c: | # kill all clients in grouping
+    Mod4-m,Delete: | # kill all clients in grouping
       grouping.each {|c| c.kill }
 
     # move grouping to the view whose index or name equals the pressed number
-    Mod4-Shift-1: grouping.each {|c| c.tags = tags[0] || 1  }
-    Mod4-Shift-2: grouping.each {|c| c.tags = tags[1] || 2  }
-    Mod4-Shift-3: grouping.each {|c| c.tags = tags[2] || 3  }
-    Mod4-Shift-4: grouping.each {|c| c.tags = tags[3] || 4  }
-    Mod4-Shift-5: grouping.each {|c| c.tags = tags[4] || 5  }
-    Mod4-Shift-6: grouping.each {|c| c.tags = tags[5] || 6  }
-    Mod4-Shift-7: grouping.each {|c| c.tags = tags[6] || 7  }
-    Mod4-Shift-8: grouping.each {|c| c.tags = tags[7] || 8  }
-    Mod4-Shift-9: grouping.each {|c| c.tags = tags[8] || 9  }
-    Mod4-Shift-0: grouping.each {|c| c.tags = tags[9] || 10 }
+    Mod4-m,1: grouping.each {|c| c.tags = tags[0] || 1  }
+    Mod4-m,2: grouping.each {|c| c.tags = tags[1] || 2  }
+    Mod4-m,3: grouping.each {|c| c.tags = tags[2] || 3  }
+    Mod4-m,4: grouping.each {|c| c.tags = tags[3] || 4  }
+    Mod4-m,5: grouping.each {|c| c.tags = tags[4] || 5  }
+    Mod4-m,6: grouping.each {|c| c.tags = tags[5] || 6  }
+    Mod4-m,7: grouping.each {|c| c.tags = tags[6] || 7  }
+    Mod4-m,8: grouping.each {|c| c.tags = tags[7] || 8  }
+    Mod4-m,9: grouping.each {|c| c.tags = tags[8] || 9  }
+    Mod4-m,0: grouping.each {|c| c.tags = tags[9] || 10 }
+
+    # again for single clients
+    Mod4-Shift-1: curr_client.tags = tags[0] || 1
+    Mod4-Shift-2: curr_client.tags = tags[1] || 2
+    Mod4-Shift-3: curr_client.tags = tags[2] || 3
+    Mod4-Shift-4: curr_client.tags = tags[3] || 4
+    Mod4-Shift-5: curr_client.tags = tags[4] || 5
+    Mod4-Shift-6: curr_client.tags = tags[5] || 6
+    Mod4-Shift-7: curr_client.tags = tags[6] || 7
+    Mod4-Shift-8: curr_client.tags = tags[7] || 8
+    Mod4-Shift-9: curr_client.tags = tags[8] || 9
+    Mod4-Shift-0: curr_client.tags = tags[9] || 10
 
     #---------------------------------------------------------------------------
     # swap
@@ -327,26 +368,26 @@ control:
     # column
     #---------------------------------------------------------------------------
 
-    Mod4-w: | # apply equal-spacing layout to current column
+    Mod4-z,w: | # apply equal-spacing layout to current column
       curr_area.layout = :default
 
-    Mod4-Shift-w: | # apply equal-spacing layout to all columns
+    Mod4-z,Shift-w: | # apply equal-spacing layout to all columns
       curr_view.columns.each do |a|
         a.layout = :default
       end
 
-    Mod4-s: | # apply stacked layout to current column
+    Mod4-z,v: | # apply stacked layout to current column
       curr_area.layout = 'stack-max'
 
-    Mod4-Shift-s: | # apply stacked layout to all columns
+    Mod4-z,Shift-v: | # apply stacked layout to all columns
       curr_view.columns.each do |a|
         a.layout = 'stack-max'
       end
 
-    Mod4-m: | # apply maximized layout to current column
+    Mod4-z,m: | # apply maximized layout to current column
       curr_area.layout = 'stack+max'
 
-    Mod4-Shift-m: | # apply maximized layout to all columns
+    Mod4-z,Shift-m: | # apply maximized layout to all columns
       curr_view.columns.each do |a|
         a.layout = 'stack+max'
       end
@@ -508,22 +549,17 @@ control:
     # menu
     #---------------------------------------------------------------------------
 
-    Mod4-i: | # run internal action chosen from a menu
+    Mod4-a: | # run internal action chosen from a menu
       if choice = key_menu(actions, 'run action:')
         action choice
       end
 
-    Mod4-e: | # run external program chosen from a menu
-      if choice = key_menu(@programs, 'run program:')
-        system choice << '&'
+    Mod4-p: | # run external program chosen from a menu
+      if choice = key_menu(@program_menu, 'run program:')
+        system_run(choice)
       end
 
-    Mod4-u: | # focus view chosen from a menu
-      if choice = key_menu(tags, 'show view:')
-        focus_view choice
-      end
-
-    Mod4-a: | # focus client chosen from a menu
+    Mod4-e: | # focus client chosen from a menu
       choices = []
 
       clients.each_with_index do |c, i|
@@ -548,6 +584,8 @@ control:
       root = ENV['HOME']
 
       label = curr_client.label.read rescue ''
+      # VIM workaround
+      label = label[/\(([^)]+)\)/, 1] if label =~ /VIM/
       label.split(' ').reverse_each do |word|
         #
         # iterate in reverse order because
@@ -567,7 +605,7 @@ control:
 
       require 'fileutils'
       FileUtils.cd root do
-        system 'urxvt &'
+        system_run 'urxvtc'
       end
 
     #---------------------------------------------------------------------------
@@ -599,15 +637,15 @@ control:
     # volume
     #---------------------------------------------------------------------------
 
-    Mod4-Shift-Prior: | # increase volume
+    XF86AudioRaiseVolume: | # increase volume
       system 'amixer set Master 3dB+'
       status 'volume'
 
-    Mod4-Shift-Next: | # decrease volume
+    XF86AudioLowerVolume: | # decrease volume
       system 'amixer set Master 3dB-'
       status 'volume'
 
-    Mod4-Shift-Return: | # mute volume (toggle)
+    XF86AudioMute: | # mute volume (toggle)
       system 'amixer set Master toggle'
       status 'volume'
 
@@ -769,10 +807,10 @@ control:
     clear: | # kill all clients
       # firefox's restore session feature does not
       # work unless the whole process is killed.
-      system 'killall firefox firefox-bin thunderbird thunderbird-bin &'
+      system_run 'killall firefox firefox-bin thunderbird thunderbird-bin'
 
       # gnome-panel refuses to die by any other means
-      system 'killall -s TERM gnome-panel &'
+      system_run 'killall -s TERM gnome-panel'
 
       Thread.pass until clients.each do |c|
         begin
@@ -782,6 +820,9 @@ control:
           # ignore
         end
       end.empty?
+
+    reload: | # reload the wmii config
+      Process.kill("HUP", Process.pid)
 
     kill: | # kill the window manager only; do not touch the clients!
       fs.ctl.write 'quit'

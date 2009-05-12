@@ -21,6 +21,15 @@ end
 # capture standard output in logger
 $stdout = $stderr = LOG
 
+# capture SIGHUP and reload the config
+trap('HUP') {
+  fork {
+    exec('/usr/bin/env', 'ruby', __FILE__)
+  }
+  sleep 2
+  exit
+}
+
 begin
   LOG.info 'birth'
 
