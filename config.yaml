@@ -122,6 +122,13 @@ display:
 
         [color, *load_averages]
 
+    disk_space:
+      position: 3
+      refresh: 60
+      content: |
+        free, used, path = `df -h ~`.split.last(3)
+        [path, used, 'used', free, 'free']
+
     volume:
       position: 50
       refresh: 60
