@@ -115,6 +115,7 @@ display:
       /gimp:Gimp:Open.*/ -> ~
       /gimp/ -> art
       /MPlayer/ -> ~
+      /pidgin/ -> ~
       /xterm/ -> ~
       /xmessage/ -> ~
       /./ -> sel
@@ -174,7 +175,6 @@ display:
         when 4 then MIXER.raise
         when 5 then MIXER.lower
         end
-        status('volume')
 
     battmon:
       position: 90
@@ -697,15 +697,12 @@ control:
 
     XF86AudioRaiseVolume: | # increase volume
       MIXER.raise
-      status('volume')
 
     XF86AudioLowerVolume: | # decrease volume
       MIXER.lower
-      status('volume')
 
     XF86AudioMute: | # mute volume (toggle)
       MIXER.toggle
-      status('volume')
 
   ##
   # Event handlers.
@@ -774,9 +771,6 @@ control:
         else # TODO: mouse events on status buttons
         end
       end
-
-    RightBarClick: |
-      status_click *argv.reverse
 
     Unresponsive: |
       client_id = argv[0]
