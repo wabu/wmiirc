@@ -107,20 +107,20 @@ display:
       content: |
         [CONFIG['display']['color']['focus'], Time.now.strftime("%a %d.%m. %T")]
 
-    cpu_load:
+    system_load:
       position: 90
-      refresh: 5
+      refresh: 10
       content: |
-        load = File.read('/proc/loadavg').split.first(3)
-        a,b,c = load.map{|s| s.to_f}
-        color = 
-          if c > 5.0 then CONFIG['display']['color']['error']
-          elsif a > 4.0 then CONFIG['display']['color']['notice']
-          elsif a > 2.0 then CONFIG['display']['color']['success']
-          else CONFIG['display']['color']['normal']
-          end
-        load.unshift(color)
+        load_averages = File.read('/proc/loadavg').split.first(3)
+        current_load  = load_averages.first.to_f
 
+        # visually indicate the intensity of system load
+        color = case
+          when current_load > 5.0 then CONFIG['display']['color']['error']
+          when current_load > 2.5 then CONFIG['display']['color']['notice']
+        end
+
+        [color, *load_averages]
 
     volume:
       position: 50
@@ -560,7 +560,7 @@ control:
 
     Mod4-p: | # run external program chosen from a menu
       if choice = key_menu(@programs, 'run program:')
-        system_run(choice)
+        launch choice
       end
 
     Mod4-e: | # focus client chosen from a menu
@@ -585,30 +585,28 @@ control:
       # working directory to be the same
       # as the currently focused terminal.
       #
-      root = ENV['HOME']
+      work = ENV['HOME']
+
       label = curr_client.label.read rescue ''
-      # VIM workaround
-      label = label[/\(([^)]+)\)/, 1] if label =~ /VIM/
-      label.split(' ').reverse_each do |word|
-        #
-        # iterate in reverse order because
-        # paths are usually at end of label
-        #
-        path = File.expand_path(word)
+
+      # iterate in reverse order because
+      # paths are usually at end of label
+      label.split(' ').reverse_each do |s|
+        path = File.expand_path(s)
 
         if File.exist? path
           unless File.directory? path
             path = File.dirname(path)
           end
 
-          root = path
+          work = path
           break
         end
       end
 
       require 'fileutils'
-      FileUtils.cd root do
-        system_run 'urxvtc'
+      FileUtils.cd work do
+        launch 'urxvtc'
       end
 
     #---------------------------------------------------------------------------
@@ -818,10 +816,10 @@ control:
     clear: | # kill all clients
       # firefox's restore session feature does not
       # work unless the whole process is killed.
-      system_run 'killall firefox firefox-bin thunderbird thunderbird-bin'
+      system 'killall firefox firefox-bin thunderbird thunderbird-bin'
 
       # gnome-panel refuses to die by any other means
-      system_run 'killall -s TERM gnome-panel'
+      system 'killall -s TERM gnome-panel'
 
       Thread.pass until clients.each do |c|
         begin
@@ -849,4 +847,3 @@ script: |
   ZOOMED_SUFFIX = /~(\d+)$/
 
   action 'rehash'
-

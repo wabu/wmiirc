@@ -4,6 +4,10 @@
 # See the LICENSE file for details.
 #++
 
+require 'shellwords'
+require 'pathname'
+require 'yaml'
+
 require 'rubygems'
 require File.join(File.dirname(__FILE__), 'rumai/lib/rumai.rb')
 require 'shellwords'
@@ -157,22 +161,20 @@ def click_menu choices, initial = nil
 end
 
 ##
-# Runs and forks a command for the sh
-#
-
-def system_run(command)
-  system(command << '&')
-end
-
-require 'pathname'
-
-##
 # Returns the basenames of executable files present in the given directories.
 #
 def find_programs *dirs
   dirs.flatten.
   map {|d| Pathname.new(d).expand_path.children rescue [] }.flatten.
   map {|f| f.basename.to_s if f.file? and f.executable? }.compact.uniq.sort
+end
+
+##
+# Launches the command built from the given words in the background.
+#
+def launch *words
+  command = words.shelljoin
+  system "#{command} &"
 end
 
 ##
@@ -223,8 +225,6 @@ class Button < Thread
   alias refresh wakeup
 end
 
-require 'yaml'
-
 ##
 # Loads the given YAML configuration file.
 #
@@ -249,7 +249,7 @@ def load_config config_file
 
     fs.ctl.write settings.map {|pair| pair.join(' ') }.join("\n")
 
-    system_run "xsetroot -solid #{CONFIG['display']['background'].inspect} &"
+    launch 'xsetroot', '-solid', CONFIG['display']['background']
 
     # column
       fs.colrules.write CONFIG['display']['column']['rule']
