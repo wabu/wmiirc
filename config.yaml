@@ -115,6 +115,8 @@ display:
       /gimp:Gimp:Open.*/ -> ~
       /gimp/ -> art
       /MPlayer/ -> ~
+      /xterm/ -> ~
+      /xmessage/ -> ~
       /./ -> sel
 
   ##
