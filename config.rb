@@ -203,7 +203,7 @@ class Button < Thread
   # If the given block raises a standard exception, then that will be
   # rescued and displayed (using error colors) as the button's label.
   #
-  def initialize fs_bar_node, refresh_rate, &button_label
+  def initialize name, fs_bar_node, refresh_rate, on_click=nil, &button_label
     raise ArgumentError, 'block must be given' unless block_given?
     super(fs_bar_node) do |button|
       while true
@@ -225,12 +225,40 @@ class Button < Thread
         sleep refresh_rate
       end
     end
+    @name = name
+    @on_click = on_click
+    @@bars[name] = self
+  end
+
+  @@bars = {}
+  attr_reader :name
+
+  ##
+  #  
+  #
+  def bar_click mouse_button
+    @on_click[mouse_button] if @on_click
   end
 
   ##
   # Refreshes the label of this button.
   #
   alias refresh wakeup
+
+  ##
+  # Get a button with a given name
+  #
+  def self.[] name
+    name = name.sub(/^(\d*-)/,'')
+    @@bars[name]
+  end
+
+  ##
+  # Iterate through all bars
+  #
+  def self.each &proc
+    @@bars.each_value &proc
+  end
 end
 
 ##
@@ -278,55 +306,38 @@ def load_config config_file
       fs.tagrules.write CONFIG['display']['tag']['rule']
 
     # status
+      CONFIG['display']['status'].each do |name, defn|
+        # buttons are displayed in the ASCII order of their IXP file names
+        file = [defn['position'], name].compact.join('-')
+
+        click = if code = defn['click'] 
+          eval "lambda {|mouse_button| #{code} }",
+               TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:click"
+        end
+        content = 
+          eval "lambda { #{defn['content']} }", 
+               TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}"
+
+        Button.new(name, fs.rbar[file], defn['refresh'], click, &content)
+      end
+
       action 'status' do
         fs.rbar.clear
-
-        unless defined? @status_button_by_name
-          @status_button_by_name = {}
-          @status_on_click_by_name = {}
-
-          CONFIG['display']['status'].each do |name, defn|
-            # buttons are displayed in the ASCII order of their IXP file names
-            file = [defn['position'], name].compact.join('-')
-
-            button = eval(
-              "Button.new(fs.rbar[#{file.inspect}], #{defn['refresh']}) { #{defn['content']} }",
-              TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}"
-            )
-
-            @status_button_by_name[name] = button
-
-            # click method called for mouse clicks to button
-            if code = CONFIG['display']['status'][name]['click']
-              @status_on_click_by_name[name] = eval(
-                "lambda {|mouse_button| #{code} }",
-                TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:click"
-              )
-            end
-          end
-        end
-
-        @status_button_by_name.each_value {|b| b.refresh }
-
+        Button.each {|b| b.refresh }
       end.call
+
+      event('RightBarClick') do |mouse_button, name|
+        if bar = Button[name]
+          bar.bar_click(mouse_button.to_i)
+        end
+      end
 
       ##
       # Refreshes the content of the status button with the given name.
       #
       def status name
-        name = name.sub(/^(\d*-)/,'')
-        if button = @status_button_by_name[name]
+        if button = Button[name]
           button.refresh
-        end
-      end
-
-      ##
-      # Calls click method on status bar by name
-      #
-      def status_click name, mouse_button
-        name = name.sub(/^(\d*-)/,'')
-        if handle = @status_on_click_by_name[name]
-          handle.call(mouse_button.to_i)
         end
       end
 
