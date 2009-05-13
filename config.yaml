@@ -36,7 +36,9 @@ params:
   # They will be bound to the result of the given ruby code.
   #
   objects:
-    mixer:
+    mixer: |
+      require 'tools/alsa.rb'
+      Alsa.new 'Master'
     music:
 
 ##
@@ -162,19 +164,13 @@ display:
     volume:
       position: 30
       refresh: 60
-      content: |
-        per,tuned,db,state,on,off = `amixer get Master`.match(/\[(\d+)%\] \[(-)?(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
-        ["%02d%%" % per, on ? (tuned ? "-%02ddB" % db.to_i : "00dB") : (tuned ? "muted" : "mute")]
+      content: MIXER
       click: |
         case mouse_button
-        when 1
-          launch 'urxvtc', '-e', 'alsamixer'
-        when 2
-          system 'amixer set Master toggle'
-        when 4
-          system 'amixer set Master 3dB+'
-        when 5
-          system 'amixer set Master 3dB-'
+        when 1 then MIXER.show_mixer
+        when 2 then MIXER.toggle
+        when 4 then MIXER.raise
+        when 5 then MIXER.lower
         end
         status('volume')
 
@@ -698,16 +694,16 @@ control:
     #---------------------------------------------------------------------------
 
     XF86AudioRaiseVolume: | # increase volume
-      system 'amixer set Master 3dB+'
-      status 'volume'
+      MIXER.raise
+      status('volume')
 
     XF86AudioLowerVolume: | # decrease volume
-      system 'amixer set Master 3dB-'
-      status 'volume'
+      MIXER.lower
+      status('volume')
 
     XF86AudioMute: | # mute volume (toggle)
-      system 'amixer set Master toggle'
-      status 'volume'
+      MIXER.toggle
+      status('volume')
 
   ##
   # Event handlers.
