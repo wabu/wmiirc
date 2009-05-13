@@ -95,6 +95,7 @@ display:
   #       from the left of the panel
   #     refresh:  <number of seconds to wait before refreshing the content>
   #     content:  <Ruby code whose result is displayed as the content>
+  #     click:    <Ruby code to handle mouse clicks with mouse_button bound to the button>
   #
   # You can refresh a particular status button in Ruby using:
   #
@@ -136,6 +137,18 @@ display:
       content: |
         per,tuned,db,state,on,off = `amixer get Master`.match(/\[(\d+)%\] \[(-)?(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
         ["%02d%%" % per, on ? (tuned ? "-%02ddB" % db.to_i : "00dB") : (tuned ? "muted" : "mute")]
+      click: |
+        case mouse_button
+        when 1
+          launch 'urxvtc', '-e', 'alsamixer'
+        when 2
+          system 'amixer set Master toggle'
+        when 4
+          system 'amixer set Master 3dB+'
+        when 5
+          system 'amixer set Master 3dB-'
+        end
+        status('volume')
 
     battmon:
       position: 90
@@ -735,6 +748,9 @@ control:
         else # TODO: mouse events on status buttons
         end
       end
+
+    RightBarClick: |
+      status_click *argv.reverse
 
     Unresponsive: |
       client_id = argv[0]

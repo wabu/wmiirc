@@ -262,6 +262,7 @@ def load_config config_file
 
         unless defined? @status_button_by_name
           @status_button_by_name = {}
+          @status_on_click_by_name = {}
 
           CONFIG['display']['status'].each do |name, defn|
             # buttons are displayed in the ASCII order of their IXP file names
@@ -273,6 +274,14 @@ def load_config config_file
             )
 
             @status_button_by_name[name] = button
+
+            # click method called for mouse clicks to button
+            if code = CONFIG['display']['status'][name]['click']
+              @status_on_click_by_name[name] = eval(
+                "lambda {|mouse_button| #{code} }",
+                TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:click"
+              )
+            end
           end
         end
 
@@ -287,6 +296,16 @@ def load_config config_file
         name = name.sub(/^(\d*-)/,'')
         if button = @status_button_by_name[name]
           button.refresh
+        end
+      end
+
+      ##
+      # Calls click method on status bar by name
+      #
+      def status_click name, mouse_button
+        name = name.sub(/^(\d*-)/,'')
+        if handle = @status_on_click_by_name[name]
+          handle.call(mouse_button.to_i)
         end
       end
 
