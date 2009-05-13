@@ -8,6 +8,8 @@
 # create a logger to aid debugging
 require 'logger'
 LOG = Logger.new(__FILE__ + '.log', 5)
+TERMINAL = 'xterm'
+XMESSAGE = 'xmessage'
 
 class << LOG
   # emulate IO.write
@@ -76,9 +78,9 @@ rescue Exception => e
   LOG.error e
 
   # allow the user to rescue themselves
-  system 'xterm &'
+  system "#{TERMINAL} &"
 
-  IO.popen('xmessage -nearmouse -file - -buttons Recover,Ignore -print', 'w+') do |f|
+  IO.popen("#{XMESSAGE} -nearmouse -file - -buttons Recover,Ignore -print", 'w+') do |f|
     f.puts e.inspect, e.backtrace
     f.close_write
 

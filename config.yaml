@@ -12,6 +12,34 @@
 
 
 ##
+# Parameters used inside the configuration.
+#
+# Each parameter will be bound to ruby constats.
+# For examlple 
+#   terminal: urxvtc 
+# will result in 
+#   TERMINAL = "urxvtc"
+#
+params:
+  ##
+  # String parameters.
+  #
+  # They are bound directly to the given value.
+  #
+  strings:
+    terminal: urxvtc
+    xmessage: gxmessage
+
+  ##
+  # Evaluated parameters.
+  #
+  # They will be bound to the result of the given ruby code.
+  #
+  objects:
+    mixer:
+    music:
+
+##
 # Appearance settings.
 #
 display:
@@ -637,7 +665,7 @@ control:
 
       require 'fileutils'
       FileUtils.cd work do
-        launch 'urxvtc'
+        terminal
       end
 
     #---------------------------------------------------------------------------
@@ -756,7 +784,7 @@ control:
       client_id = argv[0]
       client = Client.new(client_id)
 
-      IO.popen('xmessage -nearmouse -file - -buttons Kill,Wait -print', 'w+') do |f|
+      IO.popen("#{XMESSAGE} -nearmouse -file - -buttons Kill,Wait -print", 'w+') do |f|
         f.puts 'The following client is not responding.', ""
         f.puts client.inspect
         f.puts client.label.read

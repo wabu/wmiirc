@@ -178,6 +178,15 @@ def launch *words
 end
 
 ##
+# Launch a terminal
+#
+def terminal *cmd
+  cmd.unshift('-e') unless cmd.empty?
+  cmd.unshift(TERMINAL)
+  launch(*cmd)
+end
+
+##
 # A button on a bar.
 #
 class Button < Thread
@@ -230,6 +239,18 @@ end
 def load_config config_file
   config_data = YAML.load_file(config_file)
   Object.const_set :CONFIG, config_data
+
+  # handle parameter binding
+    Object.const_set :PARAMS, {}
+    CONFIG['params']['strings'].each do |name, defn|
+      PARAMS[name.to_sym] = defn
+      Object.const_set name.upcase.to_sym, defn
+    end
+    CONFIG['params']['objects'].each do |name, defn|
+      value = eval("#{defn}", TOPLEVEL_BINDING, "#{config_file}:params:objects:#{name}")
+      PARAMS[name.to_sym] = value
+      Object.const_set name.upcase.to_sym, value
+    end
 
   # display
     fo = ENV['WMII_FONT']        = CONFIG['display']['font']
