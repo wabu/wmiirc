@@ -22,7 +22,7 @@ def battmon
     end
   when "charging"
     head = '^'
-    color = CONFIG['display']['color']['normal']
+    color = CONFIG['display']['color']['focus']
     text = "%d:%02d" % rem_charge.to_i.divmod(60)
   when "idle"
     head = '='

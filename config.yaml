@@ -109,7 +109,7 @@ display:
 
     system_load:
       position: 70
-      refresh: 10
+      refresh: 5
       content: |
         load_averages = File.read('/proc/loadavg').split.first(3)
         current_load  = load_averages.first.to_f
@@ -118,6 +118,7 @@ display:
         color = case
           when current_load > 5.0 then CONFIG['display']['color']['error']
           when current_load > 2.5 then CONFIG['display']['color']['notice']
+          when current_load > 1.5 then CONFIG['display']['color']['success']
         end
 
         [color, *load_averages]
@@ -138,12 +139,12 @@ display:
 
     battmon:
       position: 90
-      refresh: 30
+      refresh: 10
       content: battmon
 
     space:
       position: 0
-      refresh: 60
+      refresh: 600
       content: []
 
 ##
