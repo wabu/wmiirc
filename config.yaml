@@ -131,7 +131,7 @@ display:
         [path, used, 'used', free, 'free']
 
     volume:
-      position: 80
+      position: 30
       refresh: 60
       content: |
         per,tuned,db,state,on,off = `amixer get Master`.match(/\[(\d+)%\] \[(-)?(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
@@ -141,6 +141,16 @@ display:
       position: 90
       refresh: 10
       content: battmon
+
+    cpu_freq:
+      position: 80
+      refresh: 1
+      content: |
+        gov = File.open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"){|f| f.readline}.chomp
+        [0,1].map {|c|
+          freq = File.open("/sys/devices/system/cpu/cpu#{c}/cpufreq/scaling_cur_freq"){|f| f.readline}.to_f/1000000.0
+          ["%.1f" % freq]
+        }.unshift(gov)
 
     space:
       position: 0
