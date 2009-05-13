@@ -108,7 +108,7 @@ display:
         [CONFIG['display']['color']['focus'], Time.now.strftime("%a %d.%m. %T")]
 
     system_load:
-      position: 90
+      position: 70
       refresh: 10
       content: |
         load_averages = File.read('/proc/loadavg').split.first(3)
@@ -123,21 +123,21 @@ display:
         [color, *load_averages]
 
     disk_space:
-      position: 3
+      position: 60
       refresh: 60
       content: |
         free, used, path = `df -h ~`.split.last(3)
         [path, used, 'used', free, 'free']
 
     volume:
-      position: 50
+      position: 80
       refresh: 60
       content: |
         per,tuned,db,state,on,off = `amixer get Master`.match(/\[(\d+)%\] \[(-)?(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
         ["%02d%%" % per, on ? (tuned ? "-%02ddB" % db.to_i : "00dB") : (tuned ? "muted" : "mute")]
 
     battmon:
-      position: 92
+      position: 90
       refresh: 30
       content: battmon
 
