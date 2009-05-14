@@ -140,6 +140,12 @@ display:
         refresh: 600
         content: []
 
+    - ifstat:
+        init: |
+          @ifstat = File.popen("ifstat -nwi eth0 5")
+        content: |
+          ['eth0', *@ifstat.readline.split]
+
     - disk_space:
         refresh: 60
         content: |

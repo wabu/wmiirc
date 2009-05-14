@@ -223,7 +223,7 @@ class Button < Thread
 
         button.create unless button.exist?
         button.write label.join(' ')
-        sleep refresh_rate
+        sleep refresh_rate if refresh_rate
       end
     end
     @name = name
@@ -312,6 +312,10 @@ def load_config config_file
 
         # buttons are displayed in the ASCII order of their IXP file names
         file = "%02d-#{name}" % position
+
+        if code = defn['init'] 
+          eval "#{code}", TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:init"
+        end
 
         click = if code = defn['click'] 
           eval "lambda {|mouse_button| #{code} }",
