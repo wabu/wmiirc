@@ -141,8 +141,7 @@ display:
         content: []
 
     - ifstat:
-        init: |
-          @ifstat = File.popen("ifstat -nwi eth0 5")
+        init: @ifstat = File.popen("ifstat -nwi eth0 5")
         content: |
           ['eth0', *@ifstat.readline.split]
 
@@ -178,9 +177,8 @@ display:
 
     - battmon:
         refresh: 10
-        content: |
-          require 'tools/battmon.rb' unless defined? foo
-          battmon
+        init: require 'tools/battmon.rb'
+        content: battmon
 
     - volume:
         refresh: 60
