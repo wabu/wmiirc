@@ -172,7 +172,9 @@ display:
 
     - battmon:
         refresh: 10
-        content: battmon
+        content: |
+          require 'tools/battmon.rb' unless defined? foo
+          battmon
 
     - volume:
         refresh: 60

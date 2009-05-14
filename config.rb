@@ -11,7 +11,8 @@ require 'yaml'
 require 'rubygems'
 require File.join(File.dirname(__FILE__), 'rumai/lib/rumai.rb')
 require 'shellwords'
-Dir[File.join(File.dirname(__FILE__), 'tools', '*.rb')].each {|file| require file}
+
+$: << File.dirname(__FILE__)
 
 include Rumai
 
