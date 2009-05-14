@@ -306,9 +306,11 @@ def load_config config_file
       fs.tagrules.write CONFIG['display']['tag']['rule']
 
     # status
-      CONFIG['display']['status'].each do |name, defn|
+      CONFIG['display']['status'].each_with_index do |hash, position|
+        name, defn = hash.to_a.first
+
         # buttons are displayed in the ASCII order of their IXP file names
-        file = [defn['position'], name].compact.join('-')
+        file = "%02d-#{name}" % position
 
         click = if code = defn['click'] 
           eval "lambda {|mouse_button| #{code} }",

@@ -123,78 +123,98 @@ display:
   ##
   # Self-refreshing buttons on the status bar.
   #
-  #   <IXP node basename>:
-  #     position: <index of this button on the status bar> # (optional)
-  #       from the left of the panel
-  #     refresh:  <number of seconds to wait before refreshing the content>
-  #     content:  <Ruby code whose result is displayed as the content>
-  #     click:    <Ruby code to handle mouse clicks with mouse_button bound to the button>
+  #   - <button name>:
+  #       refresh:  <number of seconds to wait before refreshing the content>
+  #       content:  <Ruby code whose result is displayed as the content>
+  #       click:    <Ruby code to handle mouse clicks with mouse_button bound to the button>
   #
   # You can refresh a particular status button in Ruby using:
   #
-  #   status( "IXP node basename" )
+  #   status("your button name")
+  #
+  # The horizontal order in which these buttons appear on the status
+  # bar reflects the vertical order in which they are defined below.
   #
   status:
-    clock:
-      position: 99
-      refresh: 1
-      content: |
-        [CONFIG['display']['color']['focus'], Time.now.strftime("%a %d.%m. %T")]
+    - space:
+        refresh: 600
+        content: []
 
-    system_load:
-      position: 70
-      refresh: 5
-      content: |
-        load_averages = File.read('/proc/loadavg').split.first(3)
-        current_load  = load_averages.first.to_f
+    - disk_space:
+        refresh: 60
+        content: |
+          free, used, path = `df -h ~`.split.last(3)
+          [path, used, 'used', free, 'free']
 
-        # visually indicate the intensity of system load
-        color = case
-          when current_load > 5.0 then CONFIG['display']['color']['error']
-          when current_load > 2.5 then CONFIG['display']['color']['notice']
-          when current_load > 1.5 then CONFIG['display']['color']['success']
-        end
+    - cpu_freq:
+        refresh: 1
+        content: |
+          gov = File.open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"){|f| f.readline}.chomp
+          [0,1].map {|c|
+            freq = File.open("/sys/devices/system/cpu/cpu#{c}/cpufreq/scaling_cur_freq"){|f| f.readline}.to_f/1000000.0
+            ["%.1f" % freq]
+          }.unshift(gov)
 
-        [color, *load_averages]
+    - system_load:
+        refresh: 5
+        content: |
+          load_averages = File.read('/proc/loadavg').split.first(3)
+          current_load  = load_averages.first.to_f
 
-    disk_space:
-      position: 60
-      refresh: 60
-      content: |
-        free, used, path = `df -h ~`.split.last(3)
-        [path, used, 'used', free, 'free']
+          # visually indicate the intensity of system load
+          color = case
+            when current_load > 5.0 then CONFIG['display']['color']['error']
+            when current_load > 2.5 then CONFIG['display']['color']['notice']
+            when current_load > 1.5 then CONFIG['display']['color']['success']
+          end
 
-    volume:
-      position: 30
-      refresh: 60
-      content: MIXER
-      click: |
-        case mouse_button
-        when 1 then MIXER.show_mixer
-        when 2 then MIXER.toggle
-        when 4 then MIXER.raise
-        when 5 then MIXER.lower
-        end
+          [color, *load_averages]
 
-    battmon:
-      position: 90
-      refresh: 10
-      content: battmon
+    - battmon:
+        refresh: 10
+        content: battmon
 
-    cpu_freq:
-      position: 80
-      refresh: 1
-      content: |
-        gov = File.open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"){|f| f.readline}.chomp
-        [0,1].map {|c|
-          freq = File.open("/sys/devices/system/cpu/cpu#{c}/cpufreq/scaling_cur_freq"){|f| f.readline}.to_f/1000000.0
-          ["%.1f" % freq]
-        }.unshift(gov)
+    - volume:
+        refresh: 60
+        content: MIXER
+        click: |
+          case mouse_button
+          when 1 then MIXER.show_mixer
+          when 2 then MIXER.toggle
+          when 4 then MIXER.raise
+          when 5 then MIXER.lower
+          end
 
-    space:
-      position: 0
-      refresh: 600
-      content: []
+    - clock:
+        refresh: 1
+        content: |
+          [CONFIG['display']['color']['focus'], Time.now.strftime("%a %d.%m. %T")]
+
+    #- music:
+    #    refresh: 15
+    #    content: |
+    #      unless defined? @music
+    #        require 'rubygems'
+    #        gem 'librmpd', '~> 0.1'
+    #        require 'librmpd'
+
+    #        @music = MPD.new
+    #      end
+
+    #      unless @music.connected?
+    #        @music.connect
+    #      end
+
+    #      music_state = (@music.stopped? || @music.paused?) ? '(-)' : '(>)'
+
+    #      if song = @music.current_song
+    #        artist    = song.artist
+    #        title     = song.title || (f = song.file and File.basename(f))
+    #        song_name = [artist, title].compact.join(': ')
+    #      end
+
+    #      [music_state, song_name].compact
+
 
 ##
 # Interaction settings.
@@ -761,16 +781,6 @@ control:
     # still holding on to their dragged file!
     #
     LeftBarDND: *LeftBarClick
-
-    RightBarMouseDown: |
-      mouse_button, status_id = argv
-
-      if mouse_button == '3' # secondary button
-        case click_menu %w[refresh], status_id
-        when 'refresh' then status(status_id)
-        else # TODO: mouse events on status buttons
-        end
-      end
 
     Unresponsive: |
       client_id = argv[0]
