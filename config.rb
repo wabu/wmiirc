@@ -11,6 +11,7 @@ require 'yaml'
 require 'rubygems'
 require File.join(File.dirname(__FILE__), 'rumai/lib/rumai.rb')
 require 'shellwords'
+require 'thread'
 
 $: << File.dirname(__FILE__)
 
@@ -184,11 +185,21 @@ end
 #
 def toggle_launch id, *words
   @toggle_launched = {} unless @toggle_launched
-  if last = @toggle_launched[id]
-    Process.kill "INT", @toggle_launched[id]
-  else
-    @toggle_launched[id] = pid = fork { exec words.shelljoin }
-    Thread.new { Process.wait pid; @toggle_launched.delete id }
+
+  pid,mutex = @toggle_launched[id]
+  mutex = Mutex.new unless mutex
+
+  mutex.synchronize do
+    if pid
+      Process.kill "INT", pid
+    else
+      pid = fork { exec words.shelljoin }
+      @toggle_launched[id] = [pid, mutex]
+      Thread.new do
+        Process.wait pid; 
+        mutex.synchronize{@toggle_launched.delete id}
+      end
+    end
   end
 end
 
