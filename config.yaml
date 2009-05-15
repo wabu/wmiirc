@@ -37,8 +37,8 @@ params:
   #
   objects:
     mixer: |
-      require 'tools/alsa.rb'
-      Alsa.new 'Master'
+      require 'tools/pulse.rb'
+      Pulse.new
     music:
 
 ##
