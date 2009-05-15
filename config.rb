@@ -179,6 +179,20 @@ def launch *words
 end
 
 ##
+# If a command with this id not already has been toggle_launched and did not
+# exit, launch the command, otherwise kill it
+#
+def toggle_launch id, *words
+  @toggle_launched = {} unless @toggle_launched
+  if last = @toggle_launched[id]
+    Process.kill "KILL", @toggle_launched[id]
+  else
+    @toggle_launched[id] = pid = fork { exec words.shelljoin }
+    Thread.new { Process.wait pid; @toggle_launched.delete id }
+  end
+end
+
+##
 # Launch a terminal
 #
 def terminal *cmd
