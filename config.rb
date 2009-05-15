@@ -181,24 +181,20 @@ end
 
 ##
 # If a command with this id not already has been toggle_launched and did not
-# exit, launch the command, otherwise kill it
+# exit, launch the command, otherwise interrupt it. 
+# if the programm already has been interrupted, kill it.
 #
 def toggle_launch id, *words
-  @toggle_launched = {} unless @toggle_launched
-
-  pid,mutex = @toggle_launched[id]
-  mutex = Mutex.new unless mutex
-
-  mutex.synchronize do
-    if pid
-      Process.kill "INT", pid
-    else
-      pid = fork { exec words.shelljoin }
-      @toggle_launched[id] = [pid, mutex]
-      Thread.new do
-        Process.wait pid; 
-        mutex.synchronize{@toggle_launched.delete id}
-      end
+  @toggle_launch_started = {} unless @toggle_launch_started
+  if( prog = @toggle_launch_started[id] )
+    Process.kill *prog
+    prog[0] = 'KILL'
+  else
+    pid = fork { exec words.shelljoin }
+    @toggle_launch_started[id] = ['INT', pid]
+    Thread.new do
+      Process.wait pid
+      @toggle_launch_started[id] = nil
     end
   end
 end
