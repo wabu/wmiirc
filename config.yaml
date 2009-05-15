@@ -118,6 +118,8 @@ display:
       /pidgin/ -> ~
       /xterm/ -> ~
       /xmessage/ -> ~
+      /pavucontrol/ -> ~
+      /alsamixer/ -> ~
       /./ -> sel
 
   ##
@@ -184,7 +186,7 @@ display:
 
     - volume:
         refresh: 60
-        content: MIXER
+        content: MIXER.status
         click: |
           case mouse_button
           when 1 then MIXER.show_mixer

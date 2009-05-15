@@ -14,11 +14,10 @@ class Alsa
   end
 
   def show_mixer
-    curr_view.select(:toggle)
-    terminal 'alsamixer'
+    toggle_launch self, 'urxvt', '-e', 'alsamixer'
   end
 
-  def to_s
+  def status
     per,tuned,db,state,on,off = `amixer get Master`.match(/\[(\d+)%\] \[(-)?(\d+)\.\d+dB\] \[((on)|(off))\]/).captures
     ["%02d%%" % per, on ? (tuned ? "-%02ddB" % db.to_i : "00dB") : (tuned ? "muted" : "mute")].join(' ')
   end
