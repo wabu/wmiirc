@@ -185,7 +185,7 @@ end
 def toggle_launch id, *words
   @toggle_launched = {} unless @toggle_launched
   if last = @toggle_launched[id]
-    Process.kill "KILL", @toggle_launched[id]
+    Process.kill "INT", @toggle_launched[id]
   else
     @toggle_launched[id] = pid = fork { exec words.shelljoin }
     Thread.new { Process.wait pid; @toggle_launched.delete id }
