@@ -224,7 +224,7 @@ class Button < Thread
 
         button.create unless button.exist?
         button.write label.join(' ')
-        sleep refresh_rate
+        sleep refresh_rate if refresh_rate
       end
     end
   end
@@ -304,10 +304,15 @@ def load_config config_file
             # buttons appear in ASCII order of their IXP file name
             file = "#{position}-#{name}"
 
-            button = eval(
-              "Button.new(fs.rbar[#{file.inspect}], #{defn['refresh']}) { #{defn['content']} }",
-              TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}"
-            )
+            # call init code
+            if code = defn['init']
+              eval(code, TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:init")
+            end
+
+            content = eval("lambda {#{defn['content']}}", 
+              TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:content")
+
+            button = Button.new(fs.rbar[file], defn['refresh'], &content)
 
             @status_button_by_name[name] = button
             @status_button_by_file[file] = button
