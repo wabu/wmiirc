@@ -789,6 +789,16 @@ control:
     #
     LeftBarDND: *LeftBarClick
 
+    RightBarMouseDown: |
+      mouse_button, status_id = argv
+
+      if mouse_button == '3' # secondary button
+        case click_menu %w[refresh], status_id
+        when 'refresh' then status(status_id)
+        else # TODO: mouse events on status buttons
+        end
+      end
+
     Unresponsive: |
       client_id = argv[0]
       client = Client.new(client_id)
