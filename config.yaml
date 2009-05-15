@@ -126,11 +126,13 @@ display:
   #   - <button name>:
   #       refresh:  <number of seconds to wait before refreshing the content>
   #       content:  <Ruby code whose result is displayed as the content>
-  #       click:    <Ruby code to handle mouse clicks with mouse_button bound to the button>
+  #       click:    <Ruby code to handle mouse clicks on the status button.
+  #                  This code has access to a "mouse_button" variable which is
+  #                  an integer representing the mouse button that was clicked.>
   #
   # You can refresh a particular status button in Ruby using:
   #
-  #   status("your button name")
+  #   status "your button name"
   #
   # The horizontal order in which these buttons appear on the status
   # bar reflects the vertical order in which they are defined below.
@@ -140,10 +142,10 @@ display:
         refresh: 600
         content: []
 
-    - ifstat:
-        init: @ifstat = File.popen("ifstat -nwi eth0 5")
-        content: |
-          ['eth0', *@ifstat.readline.split]
+    #- ifstat:
+    #    init: @ifstat = File.popen("ifstat -nwi eth0 5")
+    #    content: |
+    #      ['eth0', *@ifstat.readline.split]
 
     - disk_space:
         refresh: 60
@@ -190,6 +192,7 @@ display:
           when 4 then MIXER.raise
           when 5 then MIXER.lower
           end
+          status('volume')
 
     - clock:
         refresh: 1
@@ -723,12 +726,15 @@ control:
 
     XF86AudioRaiseVolume: | # increase volume
       MIXER.raise
+      status('volume')
 
     XF86AudioLowerVolume: | # decrease volume
       MIXER.lower
+      status('volume')
 
     XF86AudioMute: | # mute volume (toggle)
       MIXER.toggle
+      status('volume')
 
   ##
   # Event handlers.
@@ -789,15 +795,8 @@ control:
     #
     LeftBarDND: *LeftBarClick
 
-    RightBarMouseDown: |
-      mouse_button, status_id = argv
-
-      if mouse_button == '3' # secondary button
-        case click_menu %w[refresh], status_id
-        when 'refresh' then status(status_id)
-        else # TODO: mouse events on status buttons
-        end
-      end
+    RightBarClick: |
+      status_click *argv.reverse
 
     Unresponsive: |
       client_id = argv[0]

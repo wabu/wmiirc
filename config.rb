@@ -204,8 +204,9 @@ class Button < Thread
   # If the given block raises a standard exception, then that will be
   # rescued and displayed (using error colors) as the button's label.
   #
-  def initialize name, fs_bar_node, refresh_rate, on_click=nil, &button_label
+  def initialize fs_bar_node, refresh_rate, &button_label
     raise ArgumentError, 'block must be given' unless block_given?
+
     super(fs_bar_node) do |button|
       while true
         label =
@@ -223,51 +224,22 @@ class Button < Thread
 
         button.create unless button.exist?
         button.write label.join(' ')
-        sleep refresh_rate if refresh_rate
+        sleep refresh_rate
       end
     end
-    @name = name
-    @on_click = on_click
-    @@bars[name] = self
-  end
-
-  @@bars = {}
-  attr_reader :name
-
-  ##
-  #  
-  #
-  def bar_click mouse_button
-    @on_click[mouse_button] if @on_click
   end
 
   ##
   # Refreshes the label of this button.
   #
   alias refresh wakeup
-
-  ##
-  # Get a button with a given name
-  #
-  def self.[] name
-    name = name.sub(/^(\d*-)/,'')
-    @@bars[name]
-  end
-
-  ##
-  # Iterate through all bars
-  #
-  def self.each &proc
-    @@bars.each_value &proc
-  end
 end
 
 ##
 # Loads the given YAML configuration file.
 #
 def load_config config_file
-  config_data = YAML.load_file(config_file)
-  Object.const_set :CONFIG, config_data
+  Object.const_set :CONFIG, YAML.load_file(config_file)
 
   # handle parameter binding
     Object.const_set :PARAMS, {}
@@ -296,7 +268,18 @@ def load_config config_file
       'grabmod'     => CONFIG['control']['grab'],
     }
 
-    fs.ctl.write settings.map {|pair| pair.join(' ') }.join("\n")
+    begin
+      fs.ctl.write settings.map {|pair| pair.join(' ') }.join("\n")
+
+    rescue Rumai::IXP::Error => e
+      #
+      # settings that are not supported in a particular wmii version
+      # are ignored, and those that are supported are (silently)
+      # applied.  but a "bad command" error is raised nevertheless!
+      #
+      warn e.inspect
+      warn e.backtrace
+    end
 
     launch 'xsetroot', '-solid', CONFIG['display']['background']
 
@@ -307,44 +290,90 @@ def load_config config_file
       fs.tagrules.write CONFIG['display']['tag']['rule']
 
     # status
-      CONFIG['display']['status'].each_with_index do |hash, position|
-        name, defn = hash.to_a.first
-
-        # buttons are displayed in the ASCII order of their IXP file names
-        file = "%02d-#{name}" % position
-
-        if code = defn['init'] 
-          eval "#{code}", TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:init"
-        end
-
-        click = if code = defn['click'] 
-          eval "lambda {|mouse_button| #{code} }",
-               TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}:click"
-        end
-        content = 
-          eval "lambda { #{defn['content']} }", 
-               TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}"
-
-        Button.new(name, fs.rbar[file], defn['refresh'], click, &content)
-      end
-
       action 'status' do
         fs.rbar.clear
-        Button.each {|b| b.refresh }
+
+        unless defined? @status_button_by_name
+          @status_button_by_name     = {}
+          @status_button_by_file     = {}
+          @on_click_by_status_button = {}
+
+          CONFIG['display']['status'].each_with_index do |hash, position|
+            name, defn = hash.to_a.first
+
+            # buttons appear in ASCII order of their IXP file name
+            file = "#{position}-#{name}"
+
+            button = eval(
+              "Button.new(fs.rbar[#{file.inspect}], #{defn['refresh']}) { #{defn['content']} }",
+              TOPLEVEL_BINDING, "#{config_file}:display:status:#{name}"
+            )
+
+            @status_button_by_name[name] = button
+            @status_button_by_file[file] = button
+
+            # mouse click handler
+            if code = defn['click']
+              @on_click_by_status_button[button] = eval(
+                "lambda {|mouse_button| #{code} }", TOPLEVEL_BINDING,
+                "#{config_file}:display:status:#{name}:click"
+              )
+            end
+          end
+        end
       end.call
 
-      event('RightBarClick') do |mouse_button, name|
-        if bar = Button[name]
-          bar.bar_click(mouse_button.to_i)
-        end
+      ##
+      # Returns the status button associated with the given name.
+      #
+      # ==== Parameters
+      #
+      # [name]
+      #   Either the the user-defined name of
+      #   the status button or the basename
+      #   of the status button's IXP file.
+      #
+      def status_button name
+        @status_button_by_name[name] || @status_button_by_file[name]
       end
 
       ##
       # Refreshes the content of the status button with the given name.
       #
+      # ==== Parameters
+      #
+      # [name]
+      #   Either the the user-defined name of
+      #   the status button or the basename
+      #   of the status button's IXP file.
+      #
       def status name
-        if button = Button[name]
+        if button = status_button(name)
           button.refresh
+        end
+      end
+
+      ##
+      # Invokes the mouse click handler for the given mouse
+      # button on the status button that has the given name.
+      #
+      # ==== Parameters
+      #
+      # [name]
+      #   Either the the user-defined name of
+      #   the status button or the basename
+      #   of the status button's IXP file.
+      #
+      # [mouse_button]
+      #   The identification number of
+      #   the mouse button (as defined
+      #   by X server) that was clicked.
+      #
+      def status_click name, mouse_button
+        if button = status_button(name) and
+           handle = @on_click_by_status_button[button]
+        then
+          handle.call mouse_button.to_i
         end
       end
 
