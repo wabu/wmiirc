@@ -1,7 +1,6 @@
 class Alsa
   def initialize mixer='Master'
     @mixer = mixer
-    @status_id = status_id
   end
 
   def toggle
