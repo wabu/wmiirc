@@ -233,7 +233,7 @@ control:
   ##
   # The wmii "grabmod" setting.
   #
-  grab: Mod4
+  grab: Mod5
 
   ##
   # Key bindings.
@@ -245,117 +245,119 @@ control:
     # focus
     #---------------------------------------------------------------------------
 
-    Mod4-k: | # focus above client
+    Mod5-k: | # focus above client
       curr_view.select(:up) rescue nil
 
-    Mod4-j: | # focus below client
+    Mod5-j: | # focus below client
       curr_view.select(:down) rescue nil
 
-    Mod4-h: | # focus left client
+    Mod5-h: | # focus left client
       curr_view.select(:left) rescue nil
 
-    Mod4-l: | # focus right client
+    Mod5-l: | # focus right client
       curr_view.select(:right) rescue nil
 
-    Mod4-space: | # focus floating area (toggle)
+    Mod5-space: | # focus floating area (toggle)
       curr_view.select(:toggle)
 
-    Mod4-comma: | # focus previous view
+    Mod5-comma: | # focus previous view
       prev_view.focus
 
-    Mod4-period: | # focus next view
+    Mod5-period: | # focus next view
       next_view.focus
 
-    Mod4-Shift-space: | # toggle floating
+    Mod5-Mod1-space: | # toggle floating
       curr_client.send :toggle
 
-    Mod4-q: | # kill current client
+    Mod5-q: | # kill current client
       curr_client.kill
 
-    Mod4-Shift-q: | # slay current client
+    Mod5-Mod1-q: | # slay current client
       curr_client.slay
 
     # TODO: improve metaprogramming ;)
     # focus the view whose index or name equals the pressed number
-    Mod4-1: focus_view( tags[0] || 1  )
-    Mod4-2: focus_view( tags[1] || 2  )
-    Mod4-3: focus_view( tags[2] || 3  )
-    Mod4-4: focus_view( tags[3] || 4  )
-    Mod4-5: focus_view( tags[4] || 5  )
-    Mod4-6: focus_view( tags[5] || 6  )
-    Mod4-7: focus_view( tags[6] || 7  )
-    Mod4-8: focus_view( tags[7] || 8  )
-    Mod4-9: focus_view( tags[8] || 9  )
-    Mod4-0: focus_view( tags[9] || 10 )
+    Mod5-a,1: focus_view( tags[0] || 1  )
+    Mod5-a,2: focus_view( tags[1] || 2  )
+    Mod5-a,3: focus_view( tags[2] || 3  )
+    Mod5-a,4: focus_view( tags[3] || 4  )
+    Mod5-a,5: focus_view( tags[4] || 5  )
+    Mod5-a,6: focus_view( tags[5] || 6  )
+    Mod5-a,7: focus_view( tags[6] || 7  )
+    Mod5-a,8: focus_view( tags[7] || 8  )
+    Mod5-a,9: focus_view( tags[8] || 9  )
+    Mod5-a,0: focus_view( tags[9] || 10 )
 
     # focus the view whose name begins with the pressed alphabet
-    Mod4-v,a: t = tags.grep(/^a/i).first and focus_view(t)
-    Mod4-v,b: t = tags.grep(/^b/i).first and focus_view(t)
-    Mod4-v,c: t = tags.grep(/^c/i).first and focus_view(t)
-    Mod4-v,d: t = tags.grep(/^d/i).first and focus_view(t)
-    Mod4-v,e: t = tags.grep(/^e/i).first and focus_view(t)
-    Mod4-v,f: t = tags.grep(/^f/i).first and focus_view(t)
-    Mod4-v,g: t = tags.grep(/^g/i).first and focus_view(t)
-    Mod4-v,h: t = tags.grep(/^h/i).first and focus_view(t)
-    Mod4-v,i: t = tags.grep(/^i/i).first and focus_view(t)
-    Mod4-v,j: t = tags.grep(/^j/i).first and focus_view(t)
-    Mod4-v,k: t = tags.grep(/^k/i).first and focus_view(t)
-    Mod4-v,l: t = tags.grep(/^l/i).first and focus_view(t)
-    Mod4-v,m: t = tags.grep(/^m/i).first and focus_view(t)
-    Mod4-v,n: t = tags.grep(/^n/i).first and focus_view(t)
-    Mod4-v,o: t = tags.grep(/^o/i).first and focus_view(t)
-    Mod4-v,p: t = tags.grep(/^p/i).first and focus_view(t)
-    Mod4-v,q: t = tags.grep(/^q/i).first and focus_view(t)
-    Mod4-v,r: t = tags.grep(/^r/i).first and focus_view(t)
-    Mod4-v,s: t = tags.grep(/^s/i).first and focus_view(t)
-    Mod4-v,t: t = tags.grep(/^t/i).first and focus_view(t)
-    Mod4-v,u: t = tags.grep(/^u/i).first and focus_view(t)
-    Mod4-v,v: t = tags.grep(/^v/i).first and focus_view(t)
-    Mod4-v,w: t = tags.grep(/^w/i).first and focus_view(t)
-    Mod4-v,x: t = tags.grep(/^x/i).first and focus_view(t)
-    Mod4-v,y: t = tags.grep(/^y/i).first and focus_view(t)
-    Mod4-v,z: t = tags.grep(/^z/i).first and focus_view(t)
+    Mod5-a,a: t = tags.grep(/^a/i).first and focus_view(t)
+    Mod5-a,b: t = tags.grep(/^b/i).first and focus_view(t)
+    Mod5-a,c: t = tags.grep(/^c/i).first and focus_view(t)
+    Mod5-a,d: t = tags.grep(/^d/i).first and focus_view(t)
+    Mod5-a,e: t = tags.grep(/^e/i).first and focus_view(t)
+    Mod5-a,f: t = tags.grep(/^f/i).first and focus_view(t)
+    Mod5-a,g: t = tags.grep(/^g/i).first and focus_view(t)
+    Mod5-a,h: t = tags.grep(/^h/i).first and focus_view(t)
+    Mod5-a,i: t = tags.grep(/^i/i).first and focus_view(t)
+    Mod5-a,j: t = tags.grep(/^j/i).first and focus_view(t)
+    Mod5-a,k: t = tags.grep(/^k/i).first and focus_view(t)
+    Mod5-a,l: t = tags.grep(/^l/i).first and focus_view(t)
+    Mod5-a,m: t = tags.grep(/^m/i).first and focus_view(t)
+    Mod5-a,n: t = tags.grep(/^n/i).first and focus_view(t)
+    Mod5-a,o: t = tags.grep(/^o/i).first and focus_view(t)
+    Mod5-a,p: t = tags.grep(/^p/i).first and focus_view(t)
+    Mod5-a,q: t = tags.grep(/^q/i).first and focus_view(t)
+    Mod5-a,r: t = tags.grep(/^r/i).first and focus_view(t)
+    Mod5-a,s: t = tags.grep(/^s/i).first and focus_view(t)
+    Mod5-a,t: t = tags.grep(/^t/i).first and focus_view(t)
+    Mod5-a,u: t = tags.grep(/^u/i).first and focus_view(t)
+    Mod5-a,v: t = tags.grep(/^v/i).first and focus_view(t)
+    Mod5-a,w: t = tags.grep(/^w/i).first and focus_view(t)
+    Mod5-a,x: t = tags.grep(/^x/i).first and focus_view(t)
+    Mod5-a,y: t = tags.grep(/^y/i).first and focus_view(t)
+    Mod5-a,z: t = tags.grep(/^z/i).first and focus_view(t)
 
-    Mod4-v,space: | # focus view chosen from a menu
+    Mod5-a,space: | # focus view chosen from a menu
       if choice = key_menu(tags, 'show view:')
         focus_view choice
       end
+    Mod5-Tab: |
+      focus_view(@last_view)
 
     #---------------------------------------------------------------------------
     # move
     #---------------------------------------------------------------------------
 
-    Mod4-Shift-h: | # move client to the left
+    Mod5-Mod1-h: | # move client to the left
       curr_client.send(:left) rescue nil
 
-    Mod4-Shift-l: | # move client to the right
+    Mod5-Mod1-l: | # move client to the right
       curr_client.send(:right) rescue nil
 
-    Mod4-Shift-j: | # move client down
+    Mod5-Mod1-j: | # move client down
       curr_client.send(:down) rescue nil
 
-    Mod4-Shift-k: | # move client up
+    Mod5-Mod1-k: | # move client up
       curr_client.send(:up) rescue nil
 
-    Mod4-Shift-space: | # move client up
+    Mod5-Mod1-space: | # move client up
       curr_client.send(:toggle) rescue nil
 
-    Mod4-m,t: | # move grouping toward the top
+    Mod5-m,t: | # move grouping toward the top
       grouping.each {|c| c.send(:up) rescue nil }
 
-    Mod4-m,n: | # move grouping toward the bottom
+    Mod5-m,n: | # move grouping toward the bottom
       grouping.each {|c| c.send(:down) rescue nil }
 
-    Mod4-m,h: | # move grouping toward the left
+    Mod5-m,h: | # move grouping toward the left
       grouping.each {|c| c.send(:left) rescue nil }
 
-    Mod4-m,s: | # move grouping toward the right
+    Mod5-m,s: | # move grouping toward the right
       grouping.each {|c| c.send(:right) rescue nil }
 
-    Mod4-m,space: | # move grouping to floating area (toggle)
+    Mod5-m,space: | # move grouping to floating area (toggle)
       grouping.each {|c| c.send(:toggle) rescue nil }
 
-    Mod4-m,v: | # move grouping to chosen view
+    Mod5-m,v: | # move grouping to chosen view
       #
       # Changes the tag (according to a menu choice) of
       # each grouped client and returns the chosen tag.
@@ -376,85 +378,85 @@ control:
         end
       end
 
-    Mod4-m,Delete: | # kill all clients in grouping
+    Mod5-m,Delete: | # kill all clients in grouping
       grouping.each {|c| c.kill }
 
     # move grouping to the view whose index or name equals the pressed number
-    Mod4-m,1: grouping.each {|c| c.tags = tags[0] || 1  }
-    Mod4-m,2: grouping.each {|c| c.tags = tags[1] || 2  }
-    Mod4-m,3: grouping.each {|c| c.tags = tags[2] || 3  }
-    Mod4-m,4: grouping.each {|c| c.tags = tags[3] || 4  }
-    Mod4-m,5: grouping.each {|c| c.tags = tags[4] || 5  }
-    Mod4-m,6: grouping.each {|c| c.tags = tags[5] || 6  }
-    Mod4-m,7: grouping.each {|c| c.tags = tags[6] || 7  }
-    Mod4-m,8: grouping.each {|c| c.tags = tags[7] || 8  }
-    Mod4-m,9: grouping.each {|c| c.tags = tags[8] || 9  }
-    Mod4-m,0: grouping.each {|c| c.tags = tags[9] || 10 }
+    Mod5-m,1: grouping.each {|c| c.tags = tags[0] || 1  }
+    Mod5-m,2: grouping.each {|c| c.tags = tags[1] || 2  }
+    Mod5-m,3: grouping.each {|c| c.tags = tags[2] || 3  }
+    Mod5-m,4: grouping.each {|c| c.tags = tags[3] || 4  }
+    Mod5-m,5: grouping.each {|c| c.tags = tags[4] || 5  }
+    Mod5-m,6: grouping.each {|c| c.tags = tags[5] || 6  }
+    Mod5-m,7: grouping.each {|c| c.tags = tags[6] || 7  }
+    Mod5-m,8: grouping.each {|c| c.tags = tags[7] || 8  }
+    Mod5-m,9: grouping.each {|c| c.tags = tags[8] || 9  }
+    Mod5-m,0: grouping.each {|c| c.tags = tags[9] || 10 }
 
     # again for single clients
-    Mod4-Shift-1: curr_client.tags = tags[0] || 1
-    Mod4-Shift-2: curr_client.tags = tags[1] || 2
-    Mod4-Shift-3: curr_client.tags = tags[2] || 3
-    Mod4-Shift-4: curr_client.tags = tags[3] || 4
-    Mod4-Shift-5: curr_client.tags = tags[4] || 5
-    Mod4-Shift-6: curr_client.tags = tags[5] || 6
-    Mod4-Shift-7: curr_client.tags = tags[6] || 7
-    Mod4-Shift-8: curr_client.tags = tags[7] || 8
-    Mod4-Shift-9: curr_client.tags = tags[8] || 9
-    Mod4-Shift-0: curr_client.tags = tags[9] || 10
+    Mod5-Mod1-1: curr_client.tags = tags[0] || 1
+    Mod5-Mod1-2: curr_client.tags = tags[1] || 2
+    Mod5-Mod1-3: curr_client.tags = tags[2] || 3
+    Mod5-Mod1-4: curr_client.tags = tags[3] || 4
+    Mod5-Mod1-5: curr_client.tags = tags[4] || 5
+    Mod5-Mod1-6: curr_client.tags = tags[5] || 6
+    Mod5-Mod1-7: curr_client.tags = tags[6] || 7
+    Mod5-Mod1-8: curr_client.tags = tags[7] || 8
+    Mod5-Mod1-9: curr_client.tags = tags[8] || 9
+    Mod5-Mod1-0: curr_client.tags = tags[9] || 10
 
     #---------------------------------------------------------------------------
     # swap
     #---------------------------------------------------------------------------
 
-    Mod4-Control-k: | # swap with above client
+    Mod5-Control-k: | # swap with above client
       curr_client.swap(:up) rescue nil
 
-    Mod4-Control-j: | # swap with below client
+    Mod5-Control-j: | # swap with below client
       curr_client.swap(:down) rescue nil
 
-    Mod4-Control-h: | # swap with left client
+    Mod5-Control-h: | # swap with left client
       curr_client.swap(:left) rescue nil
 
-    Mod4-Control-l: | # swap with right client
+    Mod5-Control-l: | # swap with right client
       curr_client.swap(:right) rescue nil
 
     # swap current client with the column whose index equals the pressed number
-    Mod4-Control-1: curr_client.swap 1
-    Mod4-Control-2: curr_client.swap 2
-    Mod4-Control-3: curr_client.swap 3
-    Mod4-Control-4: curr_client.swap 4
-    Mod4-Control-5: curr_client.swap 5
-    Mod4-Control-6: curr_client.swap 6
-    Mod4-Control-7: curr_client.swap 7
-    Mod4-Control-8: curr_client.swap 8
-    Mod4-Control-9: curr_client.swap 9
-    Mod4-Control-0: curr_client.swap 10
+    Mod5-Control-1: curr_client.swap 1
+    Mod5-Control-2: curr_client.swap 2
+    Mod5-Control-3: curr_client.swap 3
+    Mod5-Control-4: curr_client.swap 4
+    Mod5-Control-5: curr_client.swap 5
+    Mod5-Control-6: curr_client.swap 6
+    Mod5-Control-7: curr_client.swap 7
+    Mod5-Control-8: curr_client.swap 8
+    Mod5-Control-9: curr_client.swap 9
+    Mod5-Control-0: curr_client.swap 10
 
     #---------------------------------------------------------------------------
     # column
     #---------------------------------------------------------------------------
 
-    Mod4-z,w: | # apply equal-spacing layout to current column
+    Mod5-z,w: | # apply equal-spacing layout to current column
       curr_area.layout = :default
 
-    Mod4-z,Shift-w: | # apply equal-spacing layout to all columns
+    Mod5-z,Mod1-w: | # apply equal-spacing layout to all columns
       curr_view.columns.each do |a|
         a.layout = :default
       end
 
-    Mod4-z,v: | # apply stacked layout to current column
+    Mod5-z,v: | # apply stacked layout to current column
       curr_area.layout = 'stack-max'
 
-    Mod4-z,Shift-v: | # apply stacked layout to all columns
+    Mod5-z,Mod1-v: | # apply stacked layout to all columns
       curr_view.columns.each do |a|
         a.layout = 'stack-max'
       end
 
-    Mod4-z,m: | # apply maximized layout to current column
+    Mod5-z,m: | # apply maximized layout to current column
       curr_area.layout = 'stack+max'
 
-    Mod4-z,Shift-m: | # apply maximized layout to all columns
+    Mod5-z,Mod1-m: | # apply maximized layout to all columns
       curr_view.columns.each do |a|
         a.layout = 'stack+max'
       end
@@ -463,50 +465,50 @@ control:
     # group
     #---------------------------------------------------------------------------
 
-    Mod4-g,g: | # toggle current client from grouping
+    Mod5-g,g: | # toggle current client from grouping
       curr_client.group!
 
-    Mod4-g,c: | # add clients in current area to grouping
+    Mod5-g,c: | # add clients in current area to grouping
       curr_area.group
 
-    Mod4-g,Shift-c: | # remove clients in current area from grouping
+    Mod5-g,Mod1-c: | # remove clients in current area from grouping
       curr_area.ungroup
 
-    Mod4-g,f: | # add clients in floating area to grouping
+    Mod5-g,f: | # add clients in floating area to grouping
       Area.floating.group
 
-    Mod4-g,Shift-f: | # remove clients in floating area from grouping
+    Mod5-g,Mod1-f: | # remove clients in floating area from grouping
       Area.floating.ungroup
 
-    Mod4-g,m: | # add clients in managed areas to grouping
+    Mod5-g,m: | # add clients in managed areas to grouping
       curr_view.managed_areas.each {|a| a.group }
 
-    Mod4-g,Shift-m: | # remove clients in managed areas from grouping
+    Mod5-g,Mod1-m: | # remove clients in managed areas from grouping
       curr_view.managed_areas.each {|a| a.ungroup }
 
-    Mod4-g,v: | # add clients in current view to grouping
+    Mod5-g,v: | # add clients in current view to grouping
       curr_view.group
 
-    Mod4-g,Shift-v: | # remove clients in current view from grouping
+    Mod5-g,Mod1-v: | # remove clients in current view from grouping
       curr_view.ungroup
 
-    Mod4-g,i: | # invert the grouping in the current view
+    Mod5-g,i: | # invert the grouping in the current view
       curr_view.group!
 
-    Mod4-g,Shift-i: | # invert the grouping in all views
+    Mod5-g,Mod1-i: | # invert the grouping in all views
       Rumai.group!
 
-    Mod4-g,d: | # add detached clients to group
+    Mod5-g,d: | # add detached clients to group
       View.new(DETACHED_TAG).group!
 
-    Mod4-g,n: | # remove all clients everywhere from grouping
+    Mod5-g,n: | # remove all clients everywhere from grouping
       Rumai.ungroup
 
     #---------------------------------------------------------------------------
     # detach
     #---------------------------------------------------------------------------
 
-    Mod4-d: | # detach grouping from current view
+    Mod5-d: | # detach grouping from current view
       grouping.each do |c|
         c.with_tags do
           delete curr_tag
@@ -514,7 +516,7 @@ control:
         end
       end
 
-    Mod4-Shift-d: | # attach most recently detached client
+    Mod5-Mod1-d: | # attach most recently detached client
       v = View.new DETACHED_TAG
 
       if v.exist? and c = v.clients.last
@@ -528,10 +530,10 @@ control:
     # zoom
     #---------------------------------------------------------------------------
 
-    Mod4-f: | # zoom client to fullscreen (toggle)
+    Mod5-f: | # zoom client to fullscreen (toggle)
       curr_client.fullscreen!
 
-    Mod4-b: | # copy grouping to temporary view
+    Mod5-b: | # copy grouping to temporary view
       clients = grouping
 
       unless clients.empty?
@@ -555,7 +557,7 @@ control:
         clients.first.focus v
       end
 
-    Mod4-Shift-b: | # return grouping to original view
+    Mod5-Mod1-b: | # return grouping to original view
       clients = grouping
 
       unless clients.empty?
@@ -591,65 +593,65 @@ control:
     # arrange
     #---------------------------------------------------------------------------
 
-    Mod4-z,t: | # arrange clients in current view like LarsWM does
+    Mod5-z,t: | # arrange clients in current view like LarsWM does
       curr_view.arrange_as_larswm
 
-    Mod4-z,g: | # arrange clients in current view like a grid
+    Mod5-z,g: | # arrange clients in current view like a grid
       curr_view.arrange_in_grid
 
-    Mod4-z,d: | # arrange clients in current view like a diamond
+    Mod5-z,d: | # arrange clients in current view like a diamond
       curr_view.arrange_in_diamond
 
     # apply grid layout with the pressed number of clients per column
-    Mod4-z,1: curr_view.arrange_in_grid 1
-    Mod4-z,2: curr_view.arrange_in_grid 2
-    Mod4-z,3: curr_view.arrange_in_grid 3
-    Mod4-z,4: curr_view.arrange_in_grid 4
-    Mod4-z,5: curr_view.arrange_in_grid 5
-    Mod4-z,6: curr_view.arrange_in_grid 6
-    Mod4-z,7: curr_view.arrange_in_grid 7
-    Mod4-z,8: curr_view.arrange_in_grid 8
-    Mod4-z,9: curr_view.arrange_in_grid 9
-    Mod4-z,0: curr_view.arrange_in_grid 9999 # make one giant column
+    Mod5-z,1: curr_view.arrange_in_grid 1
+    Mod5-z,2: curr_view.arrange_in_grid 2
+    Mod5-z,3: curr_view.arrange_in_grid 3
+    Mod5-z,4: curr_view.arrange_in_grid 4
+    Mod5-z,5: curr_view.arrange_in_grid 5
+    Mod5-z,6: curr_view.arrange_in_grid 6
+    Mod5-z,7: curr_view.arrange_in_grid 7
+    Mod5-z,8: curr_view.arrange_in_grid 8
+    Mod5-z,9: curr_view.arrange_in_grid 9
+    Mod5-z,0: curr_view.arrange_in_grid 9999 # make one giant column
 
-    Mod4-z,z: | # collapse with the client above
+    Mod5-z,z: | # collapse with the client above
       curr_view.ctl.write "grow sel sel up +9999"
-    Mod4-z,x: | # collapse with the client below
+    Mod5-z,x: | # collapse with the client below
       curr_view.ctl.write "grow sel sel down +9999"
-    Mod4-z,k: | # grow the current cilent upwords
+    Mod5-z,k: | # grow the current cilent upwords
       curr_view.ctl.write "grow sel sel up +7"
-    Mod4-z,k: | # grow the current cilent upwords
+    Mod5-z,k: | # grow the current cilent upwords
       curr_view.ctl.write "grow sel sel up +7"
-    Mod4-z,j: | # grow the current cilent downwords
+    Mod5-z,j: | # grow the current cilent downwords
       curr_view.ctl.write "grow sel sel down +7"
-    Mod4-z,Shift-j: | # shrik the current cilent upwords
+    Mod5-z,Mod1-j: | # shrik the current cilent upwords
       curr_view.ctl.write "grow sel sel up -7"
-    Mod4-z,Shift-k: | # shrink the current cilent downwords
+    Mod5-z,Mod1-k: | # shrink the current cilent downwords
       curr_view.ctl.write "grow sel sel down -7"
-    Mod4-z,h: | # grow the current collumn to the left
+    Mod5-z,h: | # grow the current collumn to the left
       curr_view.ctl.write "grow sel sel left +7"
-    Mod4-z,l: | # grow the current collumn to the right
+    Mod5-z,l: | # grow the current collumn to the right
       curr_view.ctl.write "grow sel sel right +7"
-    Mod4-z,Shift-l: | # shrink the current collumn to the left
+    Mod5-z,Mod1-l: | # shrink the current collumn to the left
       curr_view.ctl.write "grow sel sel left -7"
-    Mod4-z,Shift-h: | # shrink the current collumn to the right
+    Mod5-z,Mod1-h: | # shrink the current collumn to the right
       curr_view.ctl.write "grow sel sel right -7"
 
     #---------------------------------------------------------------------------
     # menu
     #---------------------------------------------------------------------------
 
-    Mod4-a: | # run internal action chosen from a menu
+    Mod5-i: | # run internal action chosen from a menu
       if choice = key_menu(actions, 'run action:')
         action choice
       end
 
-    Mod4-p: | # run external program chosen from a menu
+    Mod5-p: | # run external program chosen from a menu
       if choice = key_menu(@programs, 'run program:')
         launch choice
       end
 
-    Mod4-e: | # focus client chosen from a menu
+    Mod5-e: | # focus client chosen from a menu
       choices = []
 
       clients.each_with_index do |c, i|
@@ -665,7 +667,7 @@ control:
     # launcher
     #---------------------------------------------------------------------------
 
-    Mod4-x: | # launch a terminal
+    Mod5-x: | # launch a terminal
       #
       # Launch a new terminal and set its
       # working directory to be the same
@@ -699,15 +701,15 @@ control:
     # music
     #---------------------------------------------------------------------------
 
-    Mod4-Prior: | # previous song
+    Mod5-Prior: | # previous song
       @music.previous rescue nil
       status 'music'
 
-    Mod4-Next: | # next song
+    Mod5-Next: | # next song
       @music.next rescue nil
       status 'music'
 
-    Mod4-Return: | # pause song (toggle)
+    Mod5-Return: | # pause song (toggle)
       begin
         if @music.stopped?
           @music.play
@@ -763,6 +765,7 @@ control:
 
     UnfocusTag: |
       tag = argv[0]
+      @last_view = tag
       but = fs.lbar[tag]
       but.write "#{CONFIG['display']['color']['normal']} #{tag}" if but.exist?
 
