@@ -80,6 +80,7 @@ display:
   color:
     normal:   "#3A3A6A #EEEEEF #DADAEA"
     focus:    "#2A2A4A #CECEDE #5A5A8A"
+    active:   "#2A2A4A #CECEDE #AAAACA"
     error:    "#8a1f11 #FBE3E4 #FBC2C4" # from http://www.blueprintcss.org
     notice:   "#514721 #FFF6BF #FFD324" # from http://www.blueprintcss.org
     success:  "#264409 #E6EFC2 #C6D880" # from http://www.blueprintcss.org
@@ -147,7 +148,12 @@ display:
     - ifstat:
         init: @ifstat = File.popen("ifstat -nwi eth0 5")
         content: |
-          ['eth0', *@ifstat.readline.split]
+          inw, out = @ifstat.readline.match(/(\d+\.\d+) *(\d+\.\d+)|./).captures.map {|s| s.to_f}
+          color = case
+          when inw+out > 100 then CONFIG['display']['color']['notice']
+          when inw+out >   5 then CONFIG['display']['color']['active']
+          end
+          [color, 'eth0', inw, out]
 
     - disk_space:
         refresh: 60
@@ -174,7 +180,7 @@ display:
           color = case
             when current_load > 5.0 then CONFIG['display']['color']['error']
             when current_load > 2.5 then CONFIG['display']['color']['notice']
-            when current_load > 1.5 then CONFIG['display']['color']['success']
+            when current_load > 1.5 then CONFIG['display']['color']['active']
           end
 
           [color, *load_averages]
@@ -199,7 +205,7 @@ display:
     - clock:
         refresh: 1
         content: |
-          [CONFIG['display']['color']['focus'], Time.now.strftime("%a %d.%m. %T")]
+          Time.now.strftime("%a %d.%m. %T")
 
     #- music:
     #    refresh: 15
