@@ -227,6 +227,8 @@ class Button < Thread
   #
   def initialize fs_bar_node, refresh_rate, &button_label
     raise ArgumentError, 'block must be given' unless block_given?
+    normal = CONFIG['display']['color']['normal']
+    notice = CONFIG['display']['color']['notice']
 
     super(fs_bar_node) do |button|
       while true
@@ -240,14 +242,27 @@ class Button < Thread
 
         # provide default color
         unless label.first =~ /(?:#[[:xdigit:]]{6} ?){3}/
-          label.unshift CONFIG['display']['color']['normal']
+          label.unshift @highlight ? notice : normal
+        else
+          label[0] = notice if @highlight
         end
 
         button.create unless button.exist?
         button.write label.join(' ')
-        sleep refresh_rate if refresh_rate
+        if @highlight
+          @highlight = nil
+          sleep 1
+        else 
+          sleep refresh_rate if refresh_rate
+        end
       end
     end
+  end
+
+  # highlight the button for 1 second
+  def notice!
+    @highlight = true
+    refresh
   end
 
   ##
@@ -375,7 +390,24 @@ def load_config config_file
       #
       def status name
         if button = status_button(name)
+          button.color = CONFIG['display']['color']['normal']
           button.refresh
+        end
+      end
+
+      ##
+      # Refreshes and highlights the status button with the given name.
+      #
+      # ==== Parameters
+      #
+      # [name]
+      #   Either the the user-defined name of
+      #   the status button or the basename
+      #   of the status button's IXP file.
+      #
+      def status! name
+        if button = status_button(name)
+          button.notice!
         end
       end
 

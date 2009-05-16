@@ -200,7 +200,7 @@ display:
           when 4 then MIXER.raise
           when 5 then MIXER.lower
           end
-          status('volume')
+          status!('volume')
 
     - clock:
         refresh: 1
@@ -739,15 +739,15 @@ control:
 
     XF86AudioRaiseVolume: | # increase volume
       MIXER.raise
-      status('volume')
+      status!('volume')
 
     XF86AudioLowerVolume: | # decrease volume
       MIXER.lower
-      status('volume')
+      status!('volume')
 
     XF86AudioMute: | # mute volume (toggle)
       MIXER.toggle
-      status('volume')
+      status!('volume')
 
   ##
   # Event handlers.
