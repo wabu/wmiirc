@@ -266,12 +266,12 @@ def load_config config_file
     Object.const_set :PARAMS, {}
     CONFIG['params']['strings'].each do |name, defn|
       PARAMS[name.to_sym] = defn
-      Object.const_set name.upcase.to_sym, defn
+      Object.const_set name.upcase.gsub(/-/,'_').to_sym, defn
     end
     CONFIG['params']['objects'].each do |name, defn|
       value = eval("#{defn}", TOPLEVEL_BINDING, "#{config_file}:params:objects:#{name}")
       PARAMS[name.to_sym] = value
-      Object.const_set name.upcase.to_sym, value
+      Object.const_set name.upcase.gsub(/-/,'_').to_sym, value
     end
 
   # display
