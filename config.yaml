@@ -290,6 +290,11 @@ control:
     Mod4-9: focus_view( tags[8] || 9  )
     Mod4-0: focus_view( tags[9] || 10 )
 
+    Mod4-less: &focus_last |
+      focus_view(@last_view)
+
+    Alt_R,semicolon: *focus_last
+
     # focus the view whose name begins with the pressed alphabet
     Alt_R,a: t = tags.grep(/^a/i).first and focus_view(t)
     Alt_R,b: t = tags.grep(/^b/i).first and focus_view(t)
@@ -318,7 +323,7 @@ control:
     Alt_R,y: t = tags.grep(/^y/i).first and focus_view(t)
     Alt_R,z: t = tags.grep(/^z/i).first and focus_view(t)
 
-    Mod4-v,space: | # focus view chosen from a menu
+    Alt_R,comma: | # focus view chosen from a menu
       if choice = key_menu(tags, 'show view:')
         focus_view choice
       end
@@ -765,6 +770,7 @@ control:
 
     UnfocusTag: |
       tag = argv[0]
+      @last_view = tag
       but = fs.lbar[tag]
       but.write "#{CONFIG['display']['color']['normal']} #{tag}" if but.exist?
 
