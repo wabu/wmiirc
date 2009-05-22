@@ -80,7 +80,7 @@ display:
   color:
     normal:   "#3A3A6A #EEEEEF #DADAEA"
     focus:    "#2A2A4A #CECEDE #5A5A8A"
-    active:   "#2A2A4A #CECEDE #AAAACA"
+    active:   "#3A3A6A #CECEDE #DADAEA"
     error:    "#8a1f11 #FBE3E4 #FBC2C4" # from http://www.blueprintcss.org
     notice:   "#514721 #FFF6BF #FFD324" # from http://www.blueprintcss.org
     success:  "#264409 #E6EFC2 #C6D880" # from http://www.blueprintcss.org
