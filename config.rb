@@ -181,8 +181,8 @@ end
 
 ##
 # If a command with this id not already has been toggle_launched and did not
-# exit, launch the command, otherwise interrupt it. 
-# if the programm already has been interrupted, kill it.
+# exit, launch the command, otherwise terminate it. 
+# if the programm already has been terminated, kill it.
 #
 def toggle_launch id, *words
   @toggle_launch_started = {} unless @toggle_launch_started
@@ -191,7 +191,7 @@ def toggle_launch id, *words
     prog[0] = 'KILL'
   else
     pid = fork { exec words.shelljoin }
-    @toggle_launch_started[id] = ['INT', pid]
+    @toggle_launch_started[id] = ['TERM', pid]
     Thread.new do
       Process.wait pid
       @toggle_launch_started[id] = nil
