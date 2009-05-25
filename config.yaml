@@ -935,8 +935,14 @@ script:
 
   after: |
     action 'rehash'
-    fs.ctl.write 'view net'
+    fs.ctl.write 'view net' if curr_tag == '1'
 
-    launch *%W[wihack -tags /./ stalonetray --icon-gravity SE --grow-gravity W -i 13 -bg #{CONFIG['display']['color']['normal'].split[1]} -geometry 64x12+1506+1038]
-    launch *%w[wihack -tags /./ orage]
-    launch *%w[wihack -tags /./ pidgin]
+    def startup prog, *args
+      unless system "ps -e | grep #{prog} > /dev/null"
+        launch 'wihack', '-tags', '/./', prog, *args
+      end
+    end
+
+    startup *%W[stalonetray --icon-gravity SE --grow-gravity W -i 13 -bg #{CONFIG['display']['color']['normal'].split[1]} -geometry 64x12+1506+1038]
+    startup 'orage'
+    startup 'pidgin'
