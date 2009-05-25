@@ -177,10 +177,19 @@ display:
           end
           status!('volume')
 
-    - clock:
-        refresh: 1
+    - tray:
+        refresh: 100
         content: |
-          Time.now.strftime("%a %d.%m. %T")
+          ['systemtray']
+
+    - clock:
+        refresh: 10
+        content: |
+          Time.now.strftime("%a %d.%m. %H:%M")
+        click: |
+          case mouse_button
+          when 1 then launch 'orage', '-t'
+          end
 
     #- music:
     #    refresh: 15
@@ -926,3 +935,8 @@ script:
 
   after: |
     action 'rehash'
+    fs.ctl.write 'view net'
+
+    launch *%W[wihack -tags /./ stalonetray --icon-gravity SE --grow-gravity W -i 13 -bg #{CONFIG['display']['color']['normal'].split[1]} -geometry 64x12+1506+1038]
+    launch *%w[wihack -tags /./ orage]
+    launch *%w[wihack -tags /./ pidgin]
