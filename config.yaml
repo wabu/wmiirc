@@ -9,38 +9,6 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the LICENSE file for details.
 #++
-
-
-##
-# Parameters used inside the configuration.
-#
-# Each parameter will be bound to ruby constats.
-# For examlple 
-#   terminal: urxvtc 
-# will result in 
-#   TERMINAL = "urxvtc"
-#
-params:
-  ##
-  # String parameters.
-  #
-  # They are bound directly to the given value.
-  #
-  strings:
-    terminal: urxvtc
-    xmessage: gxmessage
-
-  ##
-  # Evaluated parameters.
-  #
-  # They will be bound to the result of the given ruby code.
-  #
-  objects:
-    mixer: |
-      require 'tools/pulse.rb'
-      Pulse.new
-    music:
-
 ##
 # Appearance settings.
 #
@@ -197,13 +165,13 @@ display:
 
     - volume:
         refresh: 60
-        content: MIXER.status
+        content: @mixer.status
         click: |
           case mouse_button
-          when 1 then MIXER.show_mixer
-          when 2 then MIXER.toggle
-          when 4 then MIXER.raise
-          when 5 then MIXER.lower
+          when 1 then @mixer.show_mixer
+          when 2 then @mixer.toggle
+          when 4 then @mixer.raise
+          when 5 then @mixer.lower
           end
           status!('volume')
 
@@ -743,15 +711,15 @@ control:
     #---------------------------------------------------------------------------
 
     XF86AudioRaiseVolume: | # increase volume
-      MIXER.raise
+      @mixer.raise
       status!('volume')
 
     XF86AudioLowerVolume: | # decrease volume
-      MIXER.lower
+      @mixer.lower
       status!('volume')
 
     XF86AudioMute: | # mute volume (toggle)
-      MIXER.toggle
+      @mixer.toggle
       status!('volume')
 
   ##
@@ -947,7 +915,12 @@ script:
   before: |
     DETACHED_TAG  = '|'
     ZOOMED_SUFFIX = /~(\d+)$/
+    
+    TERMINAL = 'urxvtc'
+    XMESSAGE = 'gxmessage'
+
+    require 'tools/pulse.rb'
+    @mixer = Pulse.new
 
   after: |
     action 'rehash'
-
