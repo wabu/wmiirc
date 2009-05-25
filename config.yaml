@@ -117,12 +117,14 @@ display:
     - ifstat:
         init: @ifstat = File.popen("ifstat -nwi eth0 2")
         content: |
-          inw, out = @ifstat.readline.match(/(\d+\.\d+)? *(\d+\.\d+)?/).captures.map {|s| s.to_f}
-          color = case
-          when inw+out > 100 then CONFIG['display']['color']['notice']
-          when inw+out >   1 then CONFIG['display']['color']['active']
+          if @ifstat.readline =~ /(\d+\.\d+)\s*(\d+\.\d+)/
+            inw, out = $~.captures.map {|s| s.to_f}
+            color = case
+              when inw+out > 100 then CONFIG['display']['color']['notice']
+              when inw+out >   1 then CONFIG['display']['color']['active']
+            end
+            [color, 'eth0', "%4.1f %4.1f" % [inw, out]]
           end
-          [color, 'eth0', "%4.1f %4.1f" % [inw, out]]
         click: |
           case mouse_button
           when 1 then toggle_launch :ifstat_bar, 'wicd-client', '-n'
