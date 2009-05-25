@@ -56,7 +56,7 @@ display:
   ##
   # The font to use in all text drawn by wmii.
   #
-  font: -*-sazanami mincho-*-*-*-*-*-*-*-*-*-*-iso10646-*
+  font: xft:Monospace:pixelsize=10:antialias=1:hinting=1:hintstyle=hintfull:rgba=none
 
   ##
   # Thickness of client border (measured in pixels).
