@@ -124,7 +124,8 @@ display:
           end
         click: |
           case mouse_button
-          when 1 then toggle_launch :ifstat_bar, 'wicd-client', '-n'
+          when 1 then toggle_launch :battmon, *%w[wihack -type DIALOG urxvt -e sudo iftop -i eth0]
+          when 3 then toggle_launch :ifstat_bar, 'wicd-client', '-n'
           end
 
     - disk_space:
@@ -141,6 +142,10 @@ display:
             freq = File.open("/sys/devices/system/cpu/cpu#{c}/cpufreq/scaling_cur_freq"){|f| f.readline}.to_f/1000000.0
             ["%.1f" % freq]
           }.unshift(gov)
+        click: |
+          case mouse_button
+          when 1 then toggle_launch :system_load, *%w[wihack -type DIALOG urxvt -e top]
+          end
 
     - system_load:
         refresh: 5
@@ -154,13 +159,20 @@ display:
             when current_load > 2.9 then CONFIG['display']['color']['notice']
             when current_load > 1.5 then CONFIG['display']['color']['active']
           end
-
           [color, *load_averages]
+        click: |
+          case mouse_button
+          when 1 then toggle_launch :system_load, *%w[wihack -type DIALOG urxvt -e top]
+          end
 
     - battmon:
         refresh: 10
         init: require 'tools/battmon.rb'
         content: battmon
+        click: |
+          case mouse_button
+          when 1 then toggle_launch :battmon, *%w[wihack -type DIALOG urxvt -e sudo powertop]
+          end
 
     - volume:
         refresh: 60
