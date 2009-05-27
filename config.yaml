@@ -77,9 +77,6 @@ display:
   #
   tag:
     rule: |
-      /xfce4-panel:Xfce4-panel/ -> /.*/
-      /xfce4-dict-plugin:Xfce4-dict-plugin/ -> /.*/
-      /orage:Orage/ -> /.*/
       /gimp:Gimp:Color Picker/ -> ~
       /gimp:Gimp:Open.*/ -> ~
       /gimp/ -> art
