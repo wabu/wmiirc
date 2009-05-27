@@ -441,18 +441,18 @@ control:
     # column
     #---------------------------------------------------------------------------
 
-    Mod4-z,w: | # apply equal-spacing layout to current column
-      curr_area.layout = :default
+    Mod4-z,d: | # apply equal-spacing layout to current column
+      curr_area.layout = 'default-max'
 
-    Mod4-z,Shift-w: | # apply equal-spacing layout to all columns
+    Mod4-z,Shift-d: | # apply equal-spacing layout to all columns
       curr_view.columns.each do |a|
-        a.layout = :default
+        a.layout = 'default-max'
       end
 
-    Mod4-z,v: | # apply stacked layout to current column
+    Mod4-z,s: | # apply stacked layout to current column
       curr_area.layout = 'stack-max'
 
-    Mod4-z,Shift-v: | # apply stacked layout to all columns
+    Mod4-z,Shift-s: | # apply stacked layout to all columns
       curr_view.columns.each do |a|
         a.layout = 'stack-max'
       end
@@ -602,9 +602,6 @@ control:
 
     Mod4-z,g: | # arrange clients in current view like a grid
       curr_view.arrange_in_grid
-
-    Mod4-z,d: | # arrange clients in current view like a diamond
-      curr_view.arrange_in_diamond
 
     # apply grid layout with the pressed number of clients per column
     Mod4-z,1: curr_view.arrange_in_grid 1
