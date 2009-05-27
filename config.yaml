@@ -949,6 +949,6 @@ script:
       end
     end
 
-    startup *%W[stalonetray --icon-gravity SE --grow-gravity W -i 13 -bg #{CONFIG['display']['color']['normal'].split[1]} -geometry 64x12+1506+1038]
+    startup *%W[stalonetray --icon-gravity SE --grow-gravity W -i 13 -bg #{CONFIG['display']['color']['normal'].split[1]} -geometry 64x12+1506+1038 --max-width 64]
     startup 'orage'
     startup 'pidgin'
