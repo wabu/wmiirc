@@ -6,7 +6,7 @@
 require 'logger'
 
 require 'rubygems'
-gem 'rumai', '>= 3.2.0', '< 4'
+#gem 'rumai', '>= 3.2.0', '< 4'
 require 'rumai'
 
 module Rumai
