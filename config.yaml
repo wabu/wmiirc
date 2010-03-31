@@ -8,6 +8,7 @@ import:
  - display/status/system/loadavg
  - display/status/volume/amixer
  - display/status/power/acpi
+ - display/status/trayer
  - display/status/time
  - display/notice
  - control/named-tags
