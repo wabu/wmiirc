@@ -1,0 +1,162 @@
+import:
+ - control/action
+ - control/mouse
+ - control/keyboard/qwerty
+ - display/desktop/xsetroot
+ - display/tags
+ - display/notice
+ - display/status
+ - control/named-tags
+
+prefer:
+  terminal: urxvtc
+  browser:  firefox
+  editor:   gvim
+  filer:    thunar
+
+display:
+  bar:    bottom
+  font:   xft:Monospace:pixelsize=10:antialias=1:hinting=1:hintstyle=hintfull:rgba=none
+  border: 2
+  notice: 5
+
+  color:
+    desktop:  "#eeeeef"
+    focus:    "#2A2A4A #CECEDE #5A5A8A"
+    normal:   "#3A3A6A #EEEEEF #DADAEA"
+    error:    "#EF0020 #FBD3E4 #FF0020"
+    notice:   "#514721 #FFF6BF #FFD324"
+    success:  "#264409 #E6EFE2 #B6D870"
+
+  column:
+    mode: default
+    rule: |
+      /art/ -> 17+83+17
+      /.*/ -> 62+38
+
+  ##
+  # Mapping of clients to views they must appear on.
+  #
+  #   - <client props regular expression> : <tags to apply>
+  #
+  # These mappings are processed in top-to-bottom order.
+  # Processing stops after the first matching mapping is applied.
+  #
+  client:
+
+  ##
+  # Status bar applets.
+  #
+  #   <name of your status bar applet>:
+  #
+  #       refresh:  <number of seconds to wait before updating the label>
+  #
+  #       script:   <Ruby code to evaluate in the Wmiirc::Status
+  #                  object that corresponds to this definition.>
+  #
+  #       label:    <Ruby code whose result is displayed as the
+  #                  content.  This code is placed inside a
+  #                  label() method in the Wmiirc::Status object
+  #                  that corresponds to this definition.>
+  #
+  #       mouse_action:
+  #         <mouse event>: <name of action>
+  #
+  # You can refresh a particular status bar applet in Ruby using:
+  #
+  #   Status["name of your status bar applet"].refresh
+  #
+  # The horizontal order in which these applets appear on the status
+  # bar reflects the vertical order in which they are defined below.
+  #
+  status:
+    - lock:
+        refresh: 10
+        label: |
+          Time.now.strftime("%a %d.%m. %H:%M")
+        mouse_action:
+          RightBarClick:
+            case mouse_button
+            when 1 then toggle_launch :remind, "wxremind"
+            when 2 then toggle_launch :clock, *%w[xclock -geometry 1680x1050+0+0]
+            when 3 then launch 'slock'
+            end
+
+
+##
+# Interaction settings.
+#
+control:
+
+  ##
+  # Internal scripts.
+  #
+  #   <action name>: <Ruby code to execute>
+  #
+  action:
+
+  ##
+  # Event handlers.
+  #
+  #   <event name>: <Ruby code to execute>
+  #
+  # The Ruby code has access to an "argv" variable which
+  # is a list of arguments that were passed to the event.
+  #
+  # Keep in mind that these event handlers block the
+  # wmiirc event loop---meaning that no new events are
+  # received and processed until the current one has been
+  # fully handled.  So try to keep them short and quick.
+  #
+  # If your event handler needs to perform a
+  # long-running operation, then be sure to
+  # wrap that operation inside a Ruby thread.
+  #
+  event:
+
+  ##
+  # Mapping from X mouse codes to event names.
+  #
+  mouse:
+
+  keyboard:
+    grabmod: Mod4
+
+    mod:     Mod4
+    move:    Mod4-Shift
+    swap:    Mod4-r
+    view:    Mod4-Shift-v
+    group:   Mod4-g
+    layout:  Mod4-z
+    arrange: Mod4-Shift-z
+
+  # Keyboard shortcuts.
+  #
+  #   <key sequence>: <name of action>
+  #
+  # A key sequence may contain ${...} expressions which
+  # are replaced with the value corresponding to '...' in
+  # the "control:keyboard" section of this configuration.
+  #
+  # For example, if the "control:keyboard" section was:
+  #
+  #   control:
+  #     keyboard:
+  #       foo: Mod4
+  #       bar: y
+  #
+  # and the following key sequence was used:
+  #
+  #   ${foo}-${bar},${bar}
+  #
+  # then after ${...} expression replacement,
+  # that key sequence would appear like this:
+  #
+  #   Mod4-y,y
+  #
+  keyboard_action:
+
+script:
+  - before:
+  - after: |
+      launch 'urxvtd'
