@@ -41,9 +41,16 @@ display:
   status:
     acpi:
       battery: BAT0
+    time:
+      label: Time.now.strftime("%a %d.%m. %H:%M")
+      mouse_action:
+        right_click: lock_screen
 
 control:
   action:
+    show_calendar: launch 'wxremind'
+    lock_screen:  launch 'slock'
+
   mouse:
   keyboard:
     grabmod: Mod4
