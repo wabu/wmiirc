@@ -37,6 +37,10 @@ display:
     rule: |
       /art/ -> 17+83+17
       /.*/ -> 62+38
+  status:
+    acpi:
+      battery: BAT0
+
 control:
   action:
   mouse:
