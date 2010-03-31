@@ -37,6 +37,19 @@ display:
     rule: |
       /art/ -> 17+83+17
       /.*/ -> 62+38
+control:
+  action:
+  mouse:
+  keyboard:
+    grabmod: Mod4
+
+    mod:     Mod4
+    move:    Mod4-Shift
+    swap:    Mod4-r
+    view:    Mod4-Shift-v
+    group:   Mod4-g
+    layout:  Mod4-z
+    arrange: Mod4-Shift-z
 
 script:
   - before:
