@@ -39,6 +39,9 @@ display:
       /art/ -> 17+83+17
       /.*/ -> 62+38
   status:
+    loadavg:
+      high: 2
+      ciritcal: 5
     acpi:
       battery: BAT0
     time:
