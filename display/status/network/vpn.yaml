@@ -7,14 +7,14 @@
 display:
   status:
     vpn:
-      device: tun0
       refresh: 15
+      preferences:
+        device: tun0
       label: |
-        device = @definition['device']
-        status = `ifconfig #{device} 2>&1`.split("\n").first
+        status = `ifconfig #{@device} 2>&1`.split("\n").first
 
         if status =~ /error/
-          device
+          @device
         else
-          [CONFIG['display']['color']['success'], device]
+          [CONFIG['display']['color']['success'], @device]
         end

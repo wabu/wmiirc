@@ -11,11 +11,12 @@ display:
     amixer:
       refresh: 60
 
-      script: |
-        MIXER = 'Master'
+      preferences:
+        mixer: 'Master'
 
+      script: |
         def get
-          `amixer get #{MIXER}`
+          `amixer get #{@mixer}`
         end
 
         def level
@@ -23,7 +24,7 @@ display:
         end
 
         def set value
-          system "amixer set #{MIXER} #{value}"
+          system "amixer set #{@mixer} #{value}"
           refresh
         end
 
