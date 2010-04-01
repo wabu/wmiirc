@@ -1,0 +1,20 @@
+#--
+# Copyright protects this work.
+# See LICENSE file for details.
+#++
+
+import:
+  - display/status
+
+display:
+  status:
+    trayer:
+      refresh: 9999
+      label: |
+        ".          ."
+
+script:
+  - after: |
+      # TODO calculate trayer parameters ...
+      system "killall trayer"
+      launch *%w[wihack -tags /./ trayer --edge bottom --align right --widthtype pixel --width 76 --height 8 --margin 109]
