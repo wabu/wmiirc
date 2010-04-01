@@ -50,7 +50,8 @@ module Wmiirc
         base_dirs = ENV['WMII_CONFPATH'].to_s.split(/:+/).unshift(DIR)
         ruby_dirs = base_dirs.map {|dir| File.join(dir, 'ruby') }
 
-        Dir["{#{base_dirs.zip(ruby_dirs).join(',')}}/#{file}"].first
+        Dir["{#{base_dirs.zip(ruby_dirs).join(',')}}/#{file}"].first || 
+            raise(IOError, "can't find config-file #{file}")
       end
 
       private
