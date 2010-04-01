@@ -9,25 +9,26 @@ import:
 display:
   status:
     acpi:
-      battery: BAT1   # can be overwritten in config.yaml
       refresh: 15
 
+      preferences:
+        battery:  BAT1
+        levels:   {:high : 80, :low : 10, :critical : 5}
+        messages: {:low : Battery LOW, :critical : Battery CRITICAL}
+
       script: |
-        BAT = @definition['battery']
-        LEVELS = {:high => 80, :low => 10, :critical => 5}
-        MESSAGES = {:low => "Battery LOW", :critical => "Battery CRITICAL"}
         @last_message = :high # no message
 
-        BAT_INFO_FILE = "/proc/acpi/battery/#{BAT}/info"
-        BAT_STATE_FILE = "/proc/acpi/battery/#{BAT}/state"
+        @bat_info_file = "/proc/acpi/battery/#{@battery}/info"
+        @bat_state_file = "/proc/acpi/battery/#{@battery}/state"
 
         def exist?
-          File.exist? BAT_INFO_FILE and File.exist? BAT_STATE_FILE
+          File.exist? @bat_info_file and File.exist? @bat_state_file
         end
 
         def read
-          @bat_info = IO.read(BAT_INFO_FILE)
-          @bat_state = IO.read(BAT_STATE_FILE)
+          @bat_info = IO.read(@bat_info_file)
+          @bat_state = IO.read(@bat_state_file)
         end
 
         def present?
@@ -47,9 +48,9 @@ display:
 
         def level
           case
-            when percent < LEVELS[:critical] then :critical
-            when percent < LEVELS[:low] then :low
-            when percent > LEVELS[:high] then :high
+            when percent < @levels[:critical] then :critical
+            when percent < @levels[:low] then :low
+            when percent > @levels[:high] then :high
           end
         end
 
@@ -68,8 +69,8 @@ display:
 
         def message
           current = level || :high
-          if LEVELS[current] < LEVELS[@last_message]
-            xmessage = MESSAGES[current]
+          if @levels[current] < @levels[@last_message]
+            xmessage = @messages[current]
           end
           @last_message = current
           return xmessage

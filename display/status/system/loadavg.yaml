@@ -9,13 +9,11 @@ import:
 display:
   status:
     loadavg:
-      high: 0.75
-      critical: 1.5
       refresh: 10
 
-      script: |
-        @high = @definition['high'].to_f
-        @critical = @definition['critical'].to_f
+      preferences:
+        high: 0.75
+        critical: 1.5
       label: |
         load_averages = File.read('/proc/loadavg').split.first(3)
         current_load  = load_averages.first.to_f

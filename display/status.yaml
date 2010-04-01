@@ -39,6 +39,12 @@ script:
         def initialize name, definition, position
           @definition = definition
 
+          if prefs = definition['preferences']
+            prefs.map do |k,v|
+              instance_variable_set("@#{k}", definition[k] || v)
+            end
+          end
+
           if code = definition['script']
             instance_eval code,
               CONFIG.origin(code, "display:status:#{name}:script")
