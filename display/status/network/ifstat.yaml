@@ -1,0 +1,49 @@
+# VPN tunnel status indicator.
+#--
+# Copyright protects this work.
+# See LICENSE file for details.
+#++
+
+display:
+  status:
+    ifstat:
+      preferences:
+        device: eth0
+
+      script: |
+        @ifstat = File.popen("ifstat -nwi #{@device} 2")
+
+        def devices
+          `ifconfig | cut -d' ' -f1 | sed '/^$/d'`.split
+        end
+
+        def device
+          @device
+        end
+
+        def device= dev
+          old = @ifstat
+          @device = dev
+          @ifstat = File.popen("ifstat -nwi #{@device} 2")
+          Process.kill("INT", old.pid)
+        end
+      label: |
+        if @ifstat.readline =~ /(\d+\.\d+)\s*(\d+\.\d+)/
+          inw, out = $~.captures.map {|s| s.to_f}
+          color = case
+            when inw+out > 100 then CONFIG['display']['color']['notice']
+            when inw+out >   1 then CONFIG['display']['color']['active']
+          end
+          [color, @device, "%4.1f %4.1f" % [inw, out]]
+        else
+          self.label
+        end
+      mouse_action:
+        right_click: ifstat_select_iface
+
+control:
+  action:
+    ifstat_select_iface: |
+      bar = Status['ifstat']
+      bar.device = click_menu(bar.devices, bar.device)
+
