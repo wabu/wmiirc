@@ -10,21 +10,55 @@ display:
   status:
     df:
       refresh: 600 # 10 minutes
+      preferences:
+        path: /home
 
       script: |
+        class << self
+          attr_reader :path
+        end
+
+        def path= path
+          @old = @path
+          @path = path
+          refresh
+        end
+
+        def toggle path = pathes.first
+          if path == self.path
+            self.path = @old
+          else
+            self.path = path
+          end
+        end
+
         def usage disk
           `df -h #{disk} || df #{disk}`
         end
 
+        def pathes
+          `df | sed 1d | sort -nrk 5`.split("\n").uniq.map do |l|
+            l.split.last
+          end
+        end
+
       label: |
-        free, used, path = usage('~').split.last(3)
+        free, used, path = usage(@path).split.last(3)
         [path, used, 'used', free, 'free']
 
       mouse_action:
-        left_click: show_df_stats
+        left_click:  show_df_stats
+        wheel_click: df_toggle_fullest_path
+        right_click: show_df_path_selection
 
 control:
   action:
     show_df_stats: |
       dialog Status['df'].usage(nil)
+    show_df_path_selection: |
+      if path = click_menu(Status['df'].pathes, Status['df'].path)
+        Status['df'].path = path
+      end
+    df_toggle_fullest_path:
+      Status['df'].toggle
 
