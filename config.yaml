@@ -70,6 +70,9 @@ control:
     layout:  Mod4-z
     arrange: Mod4-Shift-z
 
+  keyboard_action:
+    ${mod}-q: kill_current_client
+
 script:
   - before:
   - after: |
