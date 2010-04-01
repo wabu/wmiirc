@@ -36,7 +36,56 @@ module Wmiirc
     unless arguments.empty?
       command = [command, *arguments].shelljoin
     end
+    if wiargs = Thread.current[:wihack]
+      hack = ['wihack', *wiargs.map{|k,v| ["-#{k}", v]}.flatten].shelljoin
+      command = [hack,command].join(' ')
+    end
     system "#{command} &"
+  end
+
+  ##
+  # Modifies environment to launch commands using wihack
+  #
+  # Inside the proc, the :wihack threadlocal variable will be set,
+  # so you can use it in your own functions
+  #
+  # ==== Parameters
+  #
+  # [spec]
+  #   keyworded hash with wihack parameters
+  #
+  # [proc]
+  #   in which calls to launch use wihack with the given parameters
+  #
+  # ==== Examples
+  #
+  #   wihack :tags => "/./" do
+  #     launch "xclock"
+  #   end
+  #
+  def wihack spec, &proc
+    old_wihack = Thread.current[:wihack]
+    Thread.current[:wihack] = (old_wihack || {}).merge(spec)
+    proc.call
+  ensure
+    Thread.current[:wihack] = old_wihack
+  end
+
+  ##
+  # Modifies environment to launch commands on a specific tag using wihack
+  #
+  # ==== Parameters
+  #
+  # [tag]
+  #   Tag on which commands should be lanuched. 
+  #   This can be a Regexp, Symbol or String.
+  #
+  # [proc]
+  #   in which calls to launch use wihack with the tag parameter
+  #
+  def tagged tag, &proc
+    tag = tag.inspect if tag.is_a? Regexp
+    wihack :tags => tag.to_s, &proc
   end
 
   ##
