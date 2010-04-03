@@ -1,7 +1,4 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
+# puts trayer on top of an empty statusbar
 
 import:
   - display/status

@@ -1,9 +1,4 @@
-# VPN tunnel status indicator.
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
+# status bar with traffic indicator
 display:
   status:
     ifstat:
