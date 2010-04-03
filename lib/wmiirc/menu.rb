@@ -2,6 +2,11 @@ require 'shellwords'
 
 module Wmiirc
 
+  CACHEDIR = File.join(DIR, 'cache')
+
+  require 'fileutils'
+  FileUtils.mkdir_p(CACHEDIR)
+
   ##
   # Shows a menu (where the user must press keys on their keyboard to
   # make a choice) with the given items and returns the chosen item.
@@ -12,26 +17,22 @@ module Wmiirc
   #
   # [prompt]
   #   Instruction on what the user should enter or choose.
+  # [history]
+  #   Identify for history file of this menu
+  # [histlen]
+  #   number of items to keep in the history file
   #
-  def key_menu choices, prompt = nil
-    words = ['dmenu', '-fn', CONFIG['display']['font']]
-
-    # show menu at the same location as the status bar
-    words << '-b' if CONFIG['display']['bar'] == 'bottom'
-
-    words.concat %w[-nf -nb -sf -sb].zip(
-      [
-        CONFIG['display']['color']['normal'],
-        CONFIG['display']['color']['focus'],
-
-      ].map {|c| c.to_s.split[0,2] }.flatten
-
-    ).flatten
-
+  def key_menu choices, prompt = nil, history = nil, histlen=200
+    words = ['wimenu']
     words.push '-p', prompt if prompt
+    if history
+      histfile = File.join(CACHEDIR, "#{history}.hist")
+      words.push '-h', histfile, '-n', histlen.to_s
+    end
 
     command = words.shelljoin
     IO.popen(command, 'r+') do |menu|
+      menu.puts File.readlines(histfile).reverse if history and File.exist? histfile
       menu.puts choices
       menu.close_write
 
