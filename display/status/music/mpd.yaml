@@ -6,10 +6,6 @@
 #
 #   gem install librmpd
 #
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
 
 import:
   - display/status
@@ -128,6 +124,10 @@ control:
       Status['mpd'].add_current_song_to_playlist_from_menu
 
   keyboard_action:
+    XF86AudioPlay: pause_current_song_toggle
+    XF86AudioPrev: play_previous_song
+    XF86AudioNext: play_next_song
+    XF86AudioStop: stop_playing_song
     ${mod}-Prior: play_previous_song
     ${mod}-Next: play_next_song
     ${mod}-Return: pause_current_song_toggle

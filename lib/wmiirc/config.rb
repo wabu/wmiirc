@@ -1,8 +1,3 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
 require 'wmiirc'
 require 'yaml'
 
@@ -62,14 +57,13 @@ module Wmiirc
       begin
         Rumai.fs.ctl.write settings.map {|pair| pair.join(' ') }.join("\n")
         Rumai.fs.colrules.write self['display']['column']['rule']
-      rescue Rumai::IXP::Error => e
+      rescue Rumai::IXP::Error => error
         #
         # settings that are not supported in a particular wmii version
         # are ignored, and those that are supported are (silently)
         # applied.  but a "bad command" error is raised nevertheless!
         #
-        warn e.inspect
-        warn e.backtrace.join("\n")
+        LOG.warn "could not apply some wmii settings: #{error.inspect}"
       end
     end
 
@@ -106,32 +100,37 @@ module Wmiirc
       end
     end
 
-    def import paths, merged = {}, imported = []
-      Array(paths).each do |path|
-        path = Loader.find("#{path}.yaml")
-        partial = YAML.load_file(path)
+    def import virtual_paths, merged_result = {}, already_imported = [], importer = $0
+      Array(virtual_paths).each do |virtual_path|
+        begin
 
-        mark_origin partial, path
+          physical_path = Loader.find("#{virtual_path}.yaml")
+          config_partial = YAML.load_file(physical_path)
+          mark_origin config_partial, physical_path
 
-        imports = Array(partial['import'])
+          imports = Array(config_partial['import']) - already_imported
+          already_imported.concat imports
 
-        # prevent cycles
-        imports -= imported
-        imported.concat imports
+          import imports, merged_result, already_imported, physical_path
+          merge merged_result, config_partial, physical_path
 
-        import imports, merged, imported
-        merge merged, partial, path
+        rescue => error
+          error.message << ' when importing %s (really %s) into %s' %
+          [ virtual_path, physical_path, importer ].map(&:inspect)
+
+          raise error
+        end
       end
 
-      merged
+      merged_result
     end
 
-    def mark_origin partial, origin
-      if partial.kind_of? String
-        @origin_by_value[partial] = origin
+    def mark_origin config_partial, origin
+      if config_partial.kind_of? String
+        @origin_by_value[config_partial] = origin
 
-      elsif partial.respond_to? :each
-        partial.each do |*values|
+      elsif config_partial.respond_to? :each
+        config_partial.each do |*values|
           values.each do |v|
             mark_origin v, origin
           end
@@ -139,10 +138,10 @@ module Wmiirc
       end
     end
 
-    def merge dst_hash, src_hash, src_file, key_path = []
+    def merge dst_hash, src_hash, src_file, backtrace = []
       src_hash.each_pair do |key, src_val|
         next if src_val.nil?
-        key_path.push key
+        backtrace.push key
 
         catch :merged do
           if dst_hash.key? key
@@ -150,7 +149,7 @@ module Wmiirc
 
             # merge the values
             if dst_val.is_a? Hash and src_val.is_a? Hash
-              merge dst_val, src_val, src_file, key_path
+              merge dst_val, src_val, src_file, backtrace
               throw :merged
 
             elsif dst_val.is_a? Array
@@ -164,10 +163,10 @@ module Wmiirc
 
             elsif dst_val != nil
               dst_file = @origin_by_value[dst_val]
-              section = key_path.join(':')
+              section = backtrace.join(':')
 
               LOG.warn 'value %s from %s overrides value %s from %s in section %s' %
-                [src_val, src_file, dst_val, dst_file, section].map {|s| s.inspect }
+              [src_val, src_file, dst_val, dst_file, section].map(&:inspect)
             end
           end
 
@@ -175,7 +174,7 @@ module Wmiirc
           dst_hash[key] = src_val
         end
 
-        key_path.pop
+        backtrace.pop
       end
     end
 

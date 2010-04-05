@@ -1,14 +1,10 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
 import:
   - display/status
 
 display:
   status:
     acpi:
+      battery: BAT1   # can be overwritten in config.yaml
       refresh: 15
 
       preferences:
