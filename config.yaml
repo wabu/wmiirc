@@ -73,6 +73,20 @@ control:
   keyboard_action:
     ${mod}-q: kill_current_client
 
+  event:
+    ClientClick: |
+      case Mouse[argv[1]]
+      when 'wheel_up'    then action 'focus_above_client'
+      when 'wheel_down'  then action 'focus_below_client'
+      end
+
+    LeftBarMouseDown: |
+      case Mouse[argv[0]]
+      when 'wheel_up'    then action 'focus_previous_view'
+      when 'wheel_down'  then action 'focus_next_view'
+      end
+
+
 script:
   - before:
   - after: |
