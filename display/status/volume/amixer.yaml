@@ -6,7 +6,7 @@ display:
     amixer:
       refresh: 60
 
-      preferences:
+      prefer:
         mixer: 'Master'
 
       script: |

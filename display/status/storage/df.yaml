@@ -5,7 +5,7 @@ display:
   status:
     df:
       refresh: 600 # 10 minutes
-      preferences:
+      prefer:
         path: /home
 
       script: |

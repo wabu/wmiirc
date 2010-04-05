@@ -7,7 +7,7 @@ display:
       battery: BAT1   # can be overwritten in config.yaml
       refresh: 15
 
-      preferences:
+      prefer:
         battery:  BAT1
         levels:   {:high : 80, :low : 10, :critical : 5}
         messages: {:low : Battery LOW, :critical : Battery CRITICAL}
