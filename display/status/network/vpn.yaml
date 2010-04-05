@@ -4,7 +4,7 @@ display:
   status:
     vpn:
       refresh: 15
-      preferences:
+      prefer:
         device: tun0
       label: |
         status = `ifconfig #{@device} 2>&1`.split("\n").first

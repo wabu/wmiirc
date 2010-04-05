@@ -34,7 +34,7 @@ script:
         def initialize name, definition, position
           @definition = definition
 
-          if prefs = definition['preferences']
+          if prefs = definition['prefer']
             prefs.map do |k,v|
               instance_variable_set("@#{k}", definition[k] || v)
             end

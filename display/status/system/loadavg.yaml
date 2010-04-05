@@ -8,7 +8,7 @@ display:
       critical: 1.5
       refresh: 10
 
-      preferences:
+      prefer:
         high: 0.75
         critical: 1.5
       script: |
