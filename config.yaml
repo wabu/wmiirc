@@ -1,7 +1,7 @@
 import:
  - control/action
- - control/mouse
  - control/keyboard/qwerty
+ - display/client
  - display/desktop/xsetroot
  - display/tags
  - display/status/network/ifstat
