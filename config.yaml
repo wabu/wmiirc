@@ -1,6 +1,7 @@
 import:
  - control/action
  - control/keyboard/qwerty
+ - control/workdir
  - display/client
  - display/desktop/xsetroot
  - display/tags
