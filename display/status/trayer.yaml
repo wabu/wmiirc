@@ -17,6 +17,5 @@ script:
   - after: |
       # TODO calculate trayer parameters ...
       system "killall trayer"
-      tagged /./ do
-        launch "trayer --edge bottom --align right --widthtype pixel --width 76 --height 8 --margin 164"
-      end
+      launch "trayer --edge bottom --align right --widthtype pixel --width 76 --height 8 --margin 164",
+        :tags => '/./'
