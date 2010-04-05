@@ -1,13 +1,13 @@
 control:
   action:
-    focus_view_1:  focus_view tags[0] || key_menu(tags, "new tag:") || 1
-    focus_view_2:  focus_view tags[1] || key_menu(tags, "new tag:") || 2
-    focus_view_3:  focus_view tags[2] || key_menu(tags, "new tag:") || 3
-    focus_view_4:  focus_view tags[3] || key_menu(tags, "new tag:") || 4
-    focus_view_5:  focus_view tags[4] || key_menu(tags, "new tag:") || 5
-    focus_view_6:  focus_view tags[5] || key_menu(tags, "new tag:") || 6
-    focus_view_7:  focus_view tags[6] || key_menu(tags, "new tag:") || 7
-    focus_view_8:  focus_view tags[7] || key_menu(tags, "new tag:") || 8
-    focus_view_9:  focus_view tags[8] || key_menu(tags, "new tag:") || 9
-    focus_view_10: focus_view tags[9] || key_menu(tags, "new tag:") || 10
+    focus_view_1:  focus_view tags[0] || key_menu(tags, "new tag:", :tag) || 1
+    focus_view_2:  focus_view tags[1] || key_menu(tags, "new tag:", :tag) || 2
+    focus_view_3:  focus_view tags[2] || key_menu(tags, "new tag:", :tag) || 3
+    focus_view_4:  focus_view tags[3] || key_menu(tags, "new tag:", :tag) || 4
+    focus_view_5:  focus_view tags[4] || key_menu(tags, "new tag:", :tag) || 5
+    focus_view_6:  focus_view tags[5] || key_menu(tags, "new tag:", :tag) || 6
+    focus_view_7:  focus_view tags[6] || key_menu(tags, "new tag:", :tag) || 7
+    focus_view_8:  focus_view tags[7] || key_menu(tags, "new tag:", :tag) || 8
+    focus_view_9:  focus_view tags[8] || key_menu(tags, "new tag:", :tag) || 9
+    focus_view_10: focus_view tags[9] || key_menu(tags, "new tag:", :tag) || 10
 

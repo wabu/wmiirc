@@ -1,8 +1,3 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
 control:
   event:
     RightBarClick: |
@@ -60,8 +55,6 @@ script:
           @button = fs.rbar[file]
 
           @refresh = Thread.new do
-            refresh_delay = definition['refresh'].to_i
-
             loop do
               button_label = begin
                 Array(self.label)
@@ -78,7 +71,7 @@ script:
               @button.create unless @button.exist?
               @button.write button_label.join(' ')
 
-              sleep refresh_delay
+              sleep(*Array(definition['refresh']))
             end
           end
 

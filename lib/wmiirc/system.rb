@@ -1,8 +1,3 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
 require 'pathname'
 
 module Wmiirc
@@ -17,8 +12,10 @@ module Wmiirc
   #   to launch.  This can be a self-contained
   #   shell command if no arguments are given.
   #
-  # [arguments]
-  #   Command-line arguments for the command being launched.
+  # [arguments_then_wihack_options]
+  #   Command-line arguments for the command being launched,
+  #   optionally followed by a Hash containing command-line
+  #   option names and values for the `wihack` program.
   #
   # ==== Examples
   #
@@ -32,60 +29,29 @@ module Wmiirc
   #
   #   launch 'xmessage', 'hello world', Time.now.to_s
   #
-  def launch command, *arguments
+  # Launch a command on the floating layer (treating
+  # it as a dialog box) using the `wihack` program:
+  #
+  #   launch 'xmessage', 'hello world', Time.now.to_s, :type => 'DIALOG'
+  #
+  def launch command, *arguments_then_wihack_options
+    *arguments, wihack_options = arguments_then_wihack_options
+
+    unless wihack_options.nil? or wihack_options.kind_of? Hash
+      arguments.push wihack_options
+      wihack_options = nil
+    end
+
     unless arguments.empty?
       command = [command, *arguments].shelljoin
     end
-    if wiargs = Thread.current[:wihack]
-      hack = ['wihack', *wiargs.map{|k,v| ["-#{k}", v]}.flatten].shelljoin
-      command = [hack,command].join(' ')
+
+    if wihack_options
+      wihack_argv = wihack_options.map {|k,v| ["-#{k}", v] }.flatten
+      command = "wihack #{wihack_argv.shelljoin} #{command}"
     end
+
     system "#{command} &"
-  end
-
-  ##
-  # Modifies environment to launch commands using wihack
-  #
-  # Inside the proc, the :wihack threadlocal variable will be set,
-  # so you can use it in your own functions
-  #
-  # ==== Parameters
-  #
-  # [spec]
-  #   keyworded hash with wihack parameters
-  #
-  # [proc]
-  #   in which calls to launch use wihack with the given parameters
-  #
-  # ==== Examples
-  #
-  #   wihack :tags => "/./" do
-  #     launch "xclock"
-  #   end
-  #
-  def wihack spec, &proc
-    old_wihack = Thread.current[:wihack]
-    Thread.current[:wihack] = (old_wihack || {}).merge(spec)
-    proc.call
-  ensure
-    Thread.current[:wihack] = old_wihack
-  end
-
-  ##
-  # Modifies environment to launch commands on a specific tag using wihack
-  #
-  # ==== Parameters
-  #
-  # [tag]
-  #   Tag on which commands should be lanuched. 
-  #   This can be a Regexp, Symbol or String.
-  #
-  # [proc]
-  #   in which calls to launch use wihack with the tag parameter
-  #
-  def tagged tag, &proc
-    tag = tag.inspect if tag.is_a? Regexp
-    wihack :tags => tag.to_s, &proc
   end
 
   ##
@@ -103,18 +69,14 @@ module Wmiirc
   #   Additional command-line arguments for `xmessage`.
   #
   def dialog message, *arguments
-    # show dialog in floating area
-    Rumai.curr_view.floating_area.focus
-
-    arguments << message
-    launch 'xmessage', '-nearmouse', *arguments
+    launch 'xmessage', '-nearmouse', *arguments, message, :type => 'DIALOG'
   end
 
   ##
-  # Returns the basenames of executable files present in the given directories.
+  # Returns the basenames of executable files found in the given directories.
   #
-  def find_programs *dirs
-    dirs.flatten.
+  def find_programs *directories
+    directories.flatten.
     map {|d| Pathname.new(d).expand_path.children rescue [] }.flatten.
     map {|f| f.basename.to_s if f.file? and f.executable? }.compact.uniq.sort
   end

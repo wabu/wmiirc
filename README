@@ -71,21 +71,19 @@ Running:
 
 Upgrading:
 
-  # assuming that origin is sunaku/wmiirc
+  # assuming that "origin" points to github.com/sunaku/wmiirc
   git fetch origin
-  git checkout personal
+  git checkout master
   git rebase origin/master
+  git checkout personal
+  git rebase master
 
 Contributing:
 
   Fork this project on GitHub and send pull requests.
 
-Bugs, Features, Issues:
+Bugs, Features, Issues, Questions:
 
   File a report on the issue tracker:
   http://github.com/sunaku/wmiirc/issues/
-
-Questions:
-
-  Send me an e-mail (see LICENSE for my address).
 

@@ -1,8 +1,3 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
 display:
   notice: 5
 
@@ -13,6 +8,8 @@ script:
 
         require 'thread'
         @mutex = Mutex.new
+
+        Rumai.fs.rbar['!notice'].create
 
         ##
         # Displays the given notice in the status bar.
@@ -32,7 +29,7 @@ script:
 
               # clear the notice
               sleep [1, CONFIG['display']['notice'].to_i].max
-              button.remove
+              button.write CONFIG['display']['color']['normal']
             end
           end
         end
