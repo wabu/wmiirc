@@ -14,6 +14,7 @@ import:
  - display/status/time
  - display/notice
  - control/named-tags
+ - display/color/cadmium
 
 prefer:
   terminal: urxvtc
@@ -26,14 +27,6 @@ display:
   font:   xft:Monospace:pixelsize=10:antialias=1:hinting=1:hintstyle=hintfull:rgba=none
   border: 2
   notice: 5
-
-  color:
-    desktop:  "#eeeeef"
-    focus:    "#2A2A4A #CECEDE #5A5A8A"
-    normal:   "#3A3A6A #EEEEEF #DADAEA"
-    error:    "#EF0020 #FBD3E4 #FF0020"
-    notice:   "#514721 #FFF6BF #FFD324"
-    success:  "#264409 #E6EFE2 #B6D870"
 
   column:
     mode: default
@@ -73,6 +66,8 @@ control:
 
   keyboard_action:
     ${mod}-q: kill_current_client
+    ${mod}-v: focus_client_from_menu
+    ${mod}-c: change_tagdir
 
   event:
     ClientClick: |
