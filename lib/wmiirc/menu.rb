@@ -111,7 +111,7 @@ module Wmiirc
   #
   def client_menu prompt = nil, clients = Rumai.clients
     choices = clients.map do |c|
-      "[#{c[:tags].read}] #{c[:label].read.downcase}"
+      "#{c[:props].read.split(':').map{|p| p.downcase}.uniq.join(':')} [#{c[:tags].read}]"
     end
 
     if index = index_menu(choices, prompt)
