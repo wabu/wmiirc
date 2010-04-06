@@ -51,6 +51,7 @@ control:
   action:
     show_calendar: launch 'wxremind'
     lock_screen:  launch 'slock'
+    remove_grouping_from_current_view: grouping.each { |c| c.untag curr_tag }
 
   mouse:
   keyboard:
@@ -59,15 +60,26 @@ control:
     mod:     Mod4
     move:    Mod4-Shift
     swap:    Mod4-r
-    view:    Mod4-Shift-v
     group:   Mod4-g
     layout:  Mod4-z
     arrange: Mod4-Shift-z
+    view:    Cancel
 
   keyboard_action:
-    ${mod}-q: kill_current_client
-    ${mod}-v: focus_client_from_menu
-    ${mod}-c: change_tagdir
+    ${mod}-q:       kill_current_client
+    ${mod}-Shift-q: remove_grouping_from_current_view
+    ${mod}-y:       toggle_current_client_from_grouping
+
+    ${mod}-c:       focus_client_from_menu
+    ${mod}-Shift-c: invite_client_from_menu
+
+    ${mod}-t:       change_tagdir
+    ${mod}-v:       focus_view_from_menu
+    ${move}-v:      move_grouping_to_view_from_menu
+
+    ${mod}-Tab:     focus_most_recently_focused_view
+    Cancel,space:   focus_most_recently_focused_view
+    Cancel,Tab:     focus_view_from_menu
 
   event:
     ClientClick: |
