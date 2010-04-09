@@ -149,7 +149,7 @@ module Wmiirc
             dst_val = dst_hash[key]
 
             # merge the values
-            if dst_val.is_a? Hash and src_val.is_a? Hash
+            if dst_val.is_a? Hash and (src_val.nil? or src_val.is_a? Hash)
               merge dst_val, src_val, src_file, backtrace
               throw :merged
 
@@ -158,6 +158,12 @@ module Wmiirc
               throw :merged
 
             elsif src_val.nil?
+              dst_file = @origin_by_value[dst_val]
+              section = backtrace.join(':')
+
+              LOG.debug 'empty decleration %s from %s removes value %s from %s in section %s' %
+              [key, src_file, dst_val, dst_file, section].map(&:inspect)
+
               dst_hash.delete key
               throw :merged
               
