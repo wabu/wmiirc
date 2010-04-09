@@ -1,4 +1,4 @@
 wmiirc.log
-*.swp
+history/
 rumai/
-cache/
+*.swp

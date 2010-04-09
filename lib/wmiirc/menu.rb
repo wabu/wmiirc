@@ -2,10 +2,10 @@ require 'shellwords'
 
 module Wmiirc
 
-  CACHEDIR = File.join(DIR, 'cache')
+  HISTORY_DIR = File.join(DIR, 'history')
 
   require 'fileutils'
-  FileUtils.mkdir_p(CACHEDIR)
+  FileUtils.mkdir_p(HISTORY_DIR)
 
   ##
   # Shows a menu (where the user must press keys on their keyboard to
@@ -15,24 +15,35 @@ module Wmiirc
   #
   # ==== Parameters
   #
-  # [prompt]
-  #   Instruction on what the user should enter or choose.
-  # [history]
-  #   Identify for history file of this menu
-  # [histlen]
-  #   number of items to keep in the history file
+  # [choices]
+  #   List of choices to display in the menu.
   #
-  def key_menu choices, prompt = nil, history = nil, histlen=200
-    words = ['wimenu']
-    words.push '-p', prompt if prompt
-    if history
-      histfile = File.join(CACHEDIR, "#{history}.hist")
-      words.push '-h', histfile, '-n', histlen.to_s
+  # [prompt]
+  #   Instructions on what the user should enter or choose.
+  #
+  # [history_name]
+  #   Basename of the file in which the user's
+  #   choices will be stored: the history file.
+  #
+  # [history_size]
+  #   Number of items to keep in the history file.
+  #
+  def key_menu choices, prompt = nil, history_name = nil, history_size = 200
+    command = ['wimenu']
+    command.push '-p', prompt if prompt
+
+    if history_name
+      history_file = File.join(HISTORY_DIR, history_name)
+      command.push '-h', history_file, '-n', history_size.to_s
+
+      # show history before actual choices
+      if File.exist? history_file
+        history = File.read(history_file).chomp.split(/\n/)
+        choices = history.reverse.concat(choices).uniq
+      end
     end
 
-    command = words.shelljoin
-    IO.popen(command, 'r+') do |menu|
-      menu.puts File.readlines(histfile).reverse if history and File.exist? histfile
+    IO.popen(command.shelljoin, 'r+') do |menu|
       menu.puts choices
       menu.close_write
 
@@ -61,23 +72,22 @@ module Wmiirc
   #   into a makeshift title-bar for the menu.
   #
   def click_menu choices, initial = nil
-    words = ['wmii9menu']
+    command = ['wmii9menu']
 
     if initial
-      words << '-i'
+      command << '-i'
 
       unless choices.include? initial
         initial = "<<#{initial}>>:"
-        words << initial
+        command << initial
       end
 
-      words << initial
+      command << initial
     end
 
-    words.concat choices
-    command = words.shelljoin
+    command.concat choices
 
-    choice = `#{command}`.chomp
+    choice = `#{command.shelljoin}`.chomp
     choice unless choice.empty?
   end
 

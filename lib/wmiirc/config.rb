@@ -139,8 +139,9 @@ module Wmiirc
     end
 
     def merge dst_hash, src_hash, src_file, backtrace = []
+      return if src_hash.nil?
+
       src_hash.each_pair do |key, src_val|
-        next if src_val.nil?
         backtrace.push key
 
         catch :merged do
@@ -153,14 +154,13 @@ module Wmiirc
               throw :merged
 
             elsif dst_val.is_a? Array
-              if src_val.is_a? Array
-                dst_val.concat src_val
-              else
-                dst_val.push src_val
-              end
-
+              dst_val.concat Array(src_val)
               throw :merged
 
+            elsif src_val.nil?
+              dst_hash.delete key
+              throw :merged
+              
             elsif dst_val != nil
               dst_file = @origin_by_value[dst_val]
               section = backtrace.join(':')
